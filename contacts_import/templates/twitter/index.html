@@ -1,0 +1,393 @@
+{% extends 'templates/base.html' %} {% load static %} {% block 'css' %}
+<!--	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />-->
+<!--	<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css" />-->
+
+<!--    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" />-->
+<!--    <link type="text/css" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css" rel="stylesheet" />-->
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/b-1.7.0/b-colvis-1.7.0/b-html5-1.7.0/datatables.min.css"/>
+ 
+
+{% endblock%}
+<!-- ======= Search Section ======= -->
+{% block 'mainblock' %}
+	<section class="aw_section aw_section_peopleAPI">
+<!--		<div class="alert alert-success" role="alert" id="import_success">-->
+<!--			Contacts imported successfully-->
+<!--		</div>-->
+		<div class="alert alert-warning" role="alert" id="select_contacts_first">
+			Please select contacts first
+		</div>
+		<div class="aw_section_header">
+			<h2 class="aw_section_title">Import Contacts</h2>
+			<div class="aw_section_actions">
+				<!--Add buttons to initiate auth sequence and sign out-->
+				<button type="button" id="authorize_button" class="btn btn-primary" >
+					Login with Twitter
+				</button>
+				<button type="button" id="import-contacts" class="btn btn-primary">
+					Import Contacts
+				</button>				
+				<button type="button" id="signout_button" class="btn btn-danger" style="display: none">
+					Sign Out
+				</button>
+
+			</div>
+		</div>
+
+		<div class="aw_section_body">
+			<div class="aw_import_nav">
+				<ul class="aw_import_list">
+					<li><a href="/contacts">CSV</a></li>
+					<li><a href="/contacts/people-api">Google</a></li>
+					<li><a href="/contacts/facebook-contacts-import">Facebook</a></li>
+					<li class="active"><a href="/contacts/twitter-contacts-import">Twitter</a></li>
+					<li><a href="/contacts/linkedin-contacts-import">LinkedIn</a></li>
+				</ul>
+			</div>
+			<div class="alert alert-primary" role="alert" id="label_import_contacts">
+				Your Google Contacts are loaded. You can import them into Altworkz using "Import Contacts" button!
+			</div>
+
+			<pre id="content" style="white-space: pre-wrap"></pre>
+			
+			{% csrf_token %}
+
+			<table id="peoples" class="table table-striped table-bordered">
+				<thead class="thead-dark">
+					<tr>
+						<th><input class="dt-checkboxes" name="select_all" value="1" id="twitter-select-all" type="checkbox" /></th>
+						<th>Photo</th>
+						<th>Name</th>
+						<th>Connection Strength</th>
+						<th>Number </th>
+						<th>Email</th>
+						<th>Organization</th>
+						<th>Job title</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if twitter_friends %}
+						{% for friend in twitter_friends %}
+						<tr>
+							<td><input type="checkbox" class="twitter-select" id="tw-{{friend.id}}" contact-id="{{friend.id}}" /></td>
+							<td><img src="{{friend.photo}}" /></td>
+							<td>{{friend.name}}</td>
+							<td>{{friend.connection_strength|safe}}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>			
+						{% endfor %}
+					{% endif %}
+				</tbody>
+
+			</table>
+		</div>
+	</section>
+
+{% endblock %} {% block 'js' %}
+
+<!--
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.js"></script>
+<script type="text/javascript" src="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
+-->
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/b-1.7.0/b-colvis-1.7.0/b-html5-1.7.0/datatables.min.js"></script>
+
+<script src="{% static 'js/twitter-api.js' %}"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+	
+	/*
+	window.twttr = (function(d, s, id) {
+	
+		var js, fjs = d.getElementsByTagName(s)[0],
+		t = window.twttr || {};
+		if (d.getElementById(id)) return t;
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "https://platform.twitter.com/widgets.js";
+		fjs.parentNode.insertBefore(js, fjs);
+
+		t._e = [];
+		t.ready = function(f) {
+			t._e.push(f);
+		};
+
+		return t;
+		
+	} (document, "script", "twitter-wjs"));
+	*/
+	
+</script>
+
+
+<script>
+
+	{% if twitter_friends %}
+		$("#import-contacts").show().prop('disabled', true);
+		$("#authorize_button").hide();	
+		$("#signout_button").show();
+	{% endif %}
+		
+	let selected_twitter_contacts = []; 
+	
+	$("#authorize_button").click(function () {
+			
+		swal({
+			title: "Permission Required",
+			text: "By using Altworkz Twitter app, you are giving consent for Off-Twitter matching.",
+			icon: "warning",
+			buttons: {
+				confirm: {
+					text: "Accept",
+					value: true,
+					visible: true,
+					className: "",
+					closeModal: true
+				},
+				cancel: {
+					text: "Cancel",
+					value: null,
+					visible: true,
+					className: "",
+					closeModal: true				
+				}
+			}
+		  //buttons: true,
+		  //dangerMode: true,
+		})
+		.then((accept) => {
+			if (accept) {
+				
+				$.ajax({
+					url: 'twitter-token',
+					success: function (response) {
+					
+						window.location.href = response.url;
+
+						setInterval(function() { 
+							console.log(wind.document.body.innerText);
+						}, 1000);
+
+					}
+				});					
+				
+			} 
+			else {
+				//swal("Your imaginary file is safe!");
+			}
+		});		
+		
+
+		
+	});
+	
+	
+	$("#twitter-select-all").click(function () {
+	
+		let checked = $(this).prop('checked');
+		
+		if (checked) {
+			selected_twitter_contacts = [];	
+
+			$(".twitter-select").each(function () {
+			
+				let contact_id = $(this).attr('contact-id');			
+				selected_twitter_contacts.push(contact_id);
+				$("#import-contacts").prop('disabled', false);
+							
+			});	
+			
+		}
+		else {
+		
+			selected_twitter_contacts = [];	
+			$("#import-contacts").prop('disabled', true);
+			
+		}
+				
+	});
+	
+	$(".twitter-select").change(function () {
+		
+		let selected = $(this).prop('checked');
+		let contact_id = $(this).attr('contact-id');
+		let sci = selected_twitter_contacts.indexOf(contact_id);
+		
+		if (selected) {
+		
+			if (sci === -1) {
+				selected_twitter_contacts.push(contact_id);
+				$("#import-contacts").prop('disabled', false);
+			}
+		
+		}
+		else {
+		
+			if (sci > -1) {
+				selected_twitter_contacts.splice(sci, 1);
+			}
+						
+		}
+		
+		console.log(selected_twitter_contacts);
+			
+	});
+		
+	$("#signout_button").click(function () {
+	
+		$.ajax({
+			url: '/contacts/twitter-logout',
+			success: function (response) {
+				location.reload();
+			}
+		});
+	
+	});
+	
+	let prev_cursor = '';
+	let next_cursor = '';	
+      
+    {% if friends_cursor %}
+  
+		prev_cursor = {{friends_cursor.0}};
+		next_cursor = {{friends_cursor.1}};
+ 	
+    {% endif %}
+	
+	console.log('friends cursor ', {{friends_cursor}});
+	
+	let current_cursor = '';
+	
+	{% if current_cursor %}
+	
+		current_cursor = {{current_cursor}};
+	
+	{% endif %}
+	
+	function import_twitter_contacts (file_tag='') {
+	
+		let ft = file_tag;
+		
+   		$('.aw_wrapper').preloader({
+            text: 'Please Wait...',
+            percent: '',
+            duration: '',
+            zIndex: '',
+            setRelative: false
+        });
+				
+		$.ajax({
+			url: '/contacts/import-twitter-selected-contacts',
+			method: 'POST',		
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRFToken', jQuery("[name=csrfmiddlewaretoken]").val());
+			},
+			data: {'contact_ids': selected_twitter_contacts, 'cursor': current_cursor, 'file_tag': ft},
+			success: function (response) {
+				$('#contatcs-imports-messages').append(contactsImportsResults(response));
+				$('.aw_main').preloader('remove');
+			}		
+		});	
+	
+	}
+   		
+   $("#import-contacts").on("click", function (e) {
+   
+		swal({
+			title: "Attach File Tag?",
+			text: "Do you want to associate these contacts with file tag?",
+			icon: "info",
+			buttons: {
+				confirm: {
+					text: "Yes",
+					value: true,
+					visible: true,
+					className: "",
+					closeModal: true
+				},
+				cancel: {
+					text: "No",
+					value: null,
+					visible: true,
+					className: "",
+					closeModal: true				
+				}
+			}
+		})
+		.then((accept) => {
+			if (accept) {   
+			
+				swal("File Tag", {
+				  content: "input",
+				})
+				.then((value) => {				  
+				  	import_twitter_contacts(value);
+				});			
+						
+			}
+			else {
+				import_twitter_contacts();
+			}
+		});
+  		
+	});
+	
+
+   function contactsImportsResults (data) {
+		$("#contacts-results").modal('show');
+
+			var html = '<div class="alert alert-success" role="alert">' +
+				'<h4 class="alert-heading">Contacts imported!</h4>' +
+				'<ul style="margin-bottom: 0;">' +
+					'<li>Total records <b>' + data.imported_contacts + '</b> </li>' +
+					'<li>Records imported <b>' + data.imported_contacts + '</b> </li>' +
+					'<li>Records rejected <b>0</b> </li>' +
+				'</ul>' +
+			'</div>';
+
+		return html;
+
+   }
+   
+    let dt_buttons = [];
+
+	if (next_cursor !== '' && prev_cursor !== '') {
+	
+		dt_buttons = [	
+			{
+				text: 'Previous',
+				action: function (e, dt, node, config) {
+					window.location = '/contacts/twitter-contacts-import?cursor='+prev_cursor;
+				}
+			},
+			{
+				text: 'Next',
+				action: function (e, dt, node, config) {
+					window.location = '/contacts/twitter-contacts-import?cursor='+next_cursor;					
+				}			
+			}
+		];
+	
+	} 
+	         
+   	var table = $('#peoples').DataTable({
+        dom: 'Bfrtip',
+		pageLength: 20,	
+        buttons: dt_buttons	
+	});
+	
+	if (prev_cursor == 0 && dt_buttons.length > 0) {
+		table.button(0).disable();
+	}
+
+	$('.work-in-progress').click(function () {
+		event.preventDefault();
+		swal("In-Progress", "We are currently working on it. This feature will be available soon.", "info");
+	});	
+
+</script>
+{% endblock %}

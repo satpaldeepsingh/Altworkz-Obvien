@@ -1,0 +1,115 @@
+{% load static %}
+<style>
+	.fa-times {
+		cursor: pointer;
+		color: #f3a1a1;
+	}
+
+	.aw_card_reason {
+		font-size:13px;
+		clear:both
+	}
+	em {
+		font-weight:bold;
+	}
+
+	.result-reason {
+		font-size:12px;
+		margin-top:10px;
+	}
+	.aw_card_location {
+		font-size:12px;
+	}
+	.aw_card_location_swiper {
+		font-size:13px;
+	}
+</style>
+<header class="aw_header" id="aw_header">
+	<nav class="aw_navbar">
+		<div class="container">
+			<div class="aw_navbar_inner">
+				
+				<div class="aw_navbar_header">
+
+					<div class="aw_brand">
+						<a href="/"><img src="{% static 'img/obvien.png' %}" style="max-width:20%" alt="AltWorkz" /></a>
+					</div>
+
+					<button class="aw_mobile_toggler">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
+
+				</div> <!-- /.aw_navbar_header -->
+
+				<div class="aw_navbar_collapsible">
+
+					{% block 'topmenu' %}
+					<ul class="aw_navbar_nav">
+						<li><a href="/contacts">Import Contacts</a></li>
+
+						<li class="aw_user_login">
+						{% if user.is_authenticated %}
+							<div class="aw_user_section dropdown">
+
+								<button type="button" data-toggle="dropdown">
+
+									<figure class="aw_user_thumb">
+										<img src="{% static 'img/avatar.png' %}" alt="" />
+									</figure>
+									<span class="aw_user_name">{{ user.get_full_name }}</span>
+									<i class="fas fa-angle-down"></i>
+									
+								</button>
+
+								<div class="dropdown-menu dropdown-menu-right">
+									<a class="dropdown-item" href="/userboard/view/{{ user.id }}"><i class="far fa-fw fa-user"></i><span>View Profile</span></a>
+									<a class="dropdown-item" href="/userboard"><i class="fas fa-fw fa-address-book"></i><span>User Imported Contacts</span></a>
+									<a class="dropdown-item" href="/userboard/update_profile/{{ user.id }}"><i class="fas fa-fw fa-address-book"></i><span>Update Profile</span></a>						
+									<a class="dropdown-item" href="/accounts/change-password/"><i class="fas fa-fw fa-unlock-alt"></i><span>Change Password</span></a>
+									<a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-fw fa-sign-out-alt"></i><span>Logout</span></a>
+									<a class="dropdown-item" href="/accounts/send-email2"><i class="fas fa-users"></i><span>Invite Friend</span></a>
+								</div>
+								
+							</div>
+
+						{% else %}
+
+							<a class="aw_login_btn btn btn-primary" href="/accounts/login">Login</a>
+
+						{% endif %}
+						</li>
+					</ul>
+					{% endblock %}
+
+				</div> <!-- /.aw_navbar_collapsible -->
+			</div>
+		</div>
+	</nav>
+	{% if  user.is_authenticated and request.path == "/" %}
+	<div class="aw_searchbar">
+		<div class="container">
+			<div class="aw_searchbar_inner">
+				<div class="aw_search_box">
+					{% csrf_token %}
+					<div class="aw_search_field">
+						<i class="fas fa-search"></i>
+						<input type="text" class="form-control" name="search" id="search-text" placeholder="Search" />
+						<button type="button" class="search-submit">
+							<i class="fas fa-arrow-right"></i>
+						</button>
+					</div>
+					<div class="search-validation-msg">Please enter search string</div>
+				</div>
+				<div class="aw_filters">
+					<div class="aw_filter_selected">
+						<ul id="applied-filters-ul">
+						</ul>
+					</div>
+				</div>
+			</div> <!-- /.aw_searchbar_inner -->
+		</div> <!-- /.container -->
+	</div> <!-- /.aw_searchbar -->
+	{% endif %}
+</header>

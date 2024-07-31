@@ -1,0 +1,54 @@
+{% extends 'templates/base.html' %} {% load static %} 
+{% block 'unauthenticatedblock' %}
+
+<div class="aw_user_reg_holder">
+
+	<div class="aw_reg_logo">
+		<img src="{% static 'img/obvien.png' %}" alt="" />
+	</div>
+
+	<div class="aw_user_form_holder">
+
+		<form class="aw_user_form" method="post">
+
+			{% csrf_token %} {{ form.as_p }}
+
+			<div class="aw_user_form_switch">
+
+				<div class="signup_link">
+					Don't have an account? <a href="/accounts/signup">Sign up</a>
+				</div>
+
+				<div class="forgot_password_link">
+<!--					<a href="/accounts/forgot-password">Forgot Password</a>-->
+				</div>
+
+			</div> <!-- /.aw_user_form_switch -->
+
+			<div class="aw_user_form_submit">
+				<button class="btn btn-primary" type="submit">Login</button>
+			</div>
+			
+		</form>
+
+	</div>
+
+</div> <!-- /.aw_user_reg_holder -->
+
+{% endblock%}
+
+{% block 'js' %}
+	<script>
+		$(document).ready(function () {
+			var field_placeholders = {
+				'username': 'Username',
+				'password': 'Password'
+			};
+
+			for (field in field_placeholders) {
+				$(`#id_${field}`).attr('placeholder', field_placeholders[field]);
+				//console.log(field);
+			}
+		});
+	</script>
+{% endblock %}

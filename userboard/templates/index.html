@@ -1,0 +1,310 @@
+{% extends 'templates/base.html' %} {% load static %} {% block 'css' %}
+<link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" />
+<link href="{% static 'css/tags-input.css' %}" rel="stylesheet" />
+
+{% endblock %}
+<!-- ======= Search Section ======= -->
+{% block 'mainblock' %}
+
+	<section class="aw_section aw_section_user_dashboard">
+		<h2 class="aw_section_title">User Imported Contacts</h2>
+		<div class="alert alert-success delete-contact-success" role="alert">
+			Contact(s) successfully deleted!
+		</div>
+<!--		<pre id="content" style="white-space: pre-wrap"></pre>-->
+
+		<table id="userboardTable" class="table table-striped table-bordered">
+			<button id="multi-delete" class="btn btn-danger btn-md" style="margin-bottom:20px" disabled>Delete</button>
+			<div>
+				<button id="select-all-records" class="btn btn-info btn-primary" style="margin-bottom:20px" state="unselected">Select All Records</button>
+			</div>
+			{% csrf_token %}
+			<thead class="thead-dark">
+				<tr>
+					<th><input type="checkbox" id="multi-select" /></th>				
+					<th>Photo</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Email</th>
+					<th>Phone</th>
+					<th>General Tags</th>
+					<th>User Tags</th>
+					<th>File Tags</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for contact in context.contacts %}
+				<tr>
+					<td><input type="checkbox" class="ci-select" contact-id="{{ contact.id }}" /></td>				
+					<td>
+					{% if contact.photo %}
+						<img src=" {{ contact.photo }}"/>	
+					{% else %}
+						<img src="  /static/img/avatar.png"/>
+					{% endif %}
+					</td>
+					<td>{{ contact.first_name }}</td>
+					<td>{{ contact.last_name }}</td>
+					<td>{{ contact.primary_email|default_if_none:"n/a" }}</td>
+					<td>{{ contact.primary_phone|default_if_none:"n/a" }}</td>
+					<td>{{ contact.ctags }}</td>
+					<td></td>
+					<td>{{ contact.file_tags|default_if_none:"" }}</td>															
+					<td class="userboard_action">
+						<a class="contact_edit" href="edit/{{ contact.id }}">
+							<i class="fas fa-pencil-alt"></i>
+							<span>Edit</span>
+						</a>
+<!--						<a class="contact_delete" href="delete/{{ contact.id }}">-->
+<!--							<i class="far fa-trash-alt"></i>-->
+<!--							<span>Delete</span>-->
+<!--						</a>-->
+						<a class="contact_delete" onclick="deleteImportContact(this)" data-id="{{ contact.id }}" data-first-name="{{ contact.first_name }}" data-last-name="{{ contact.last_name }}">
+							<i class="far fa-trash-alt"></i>
+							<span>Delete</span>
+						</a>
+						<a class="contact_add_user_tag" data-id="{{contact.id}}" href="#">
+							<i class="bi bi-tag-alt"></i>
+							<span>Add Tag</span>
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+
+		</table>
+	
+	</section>
+
+{% endblock %}
+
+{% block 'js' %}
+	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script type="text/javascript" src="{% static 'js/tags-input.js' %}"></script>
+	<script>
+	
+		var imported_users_table = $("#userboardTable").DataTable();
+				
+		function deleteImportContact(data) {
+			$('#delete-import-contact').modal('show');
+			var firstName = data.getAttribute("data-first-name");
+			document.getElementById("del-fname").innerHTML = firstName;
+			var lastName = data.getAttribute("data-last-name");
+			document.getElementById("del-lname").innerHTML = lastName;
+			var contact_id = data.getAttribute("data-id");
+			document.getElementById("del-contact-id").value = contact_id;
+		}
+			
+		var selected_contacts = [];
+		var num_of_contacts = {{context.contacts|length}};
+		
+		$('#select-all-records').click(function () {
+			selected_contacts = [];
+		
+			var all_selection_state = $(this).attr('state');
+			
+			if (all_selection_state == 'unselected') {
+				$(this).text('Unselect All Records');
+				$(this).attr('state', 'selected');
+				
+				$('#multi-select').prop('checked', true);
+				
+				imported_users_table.rows().every(function (row_index, table_loop, row_loop) {
+					let checkbox_element = $(this.data()[0]);
+					$(this.node()).find('.ci-select').prop('checked', true);				
+					selected_contacts.push(checkbox_element.attr('contact-id')); 													
+				});	
+
+				if (selected_contacts.length > 1) {
+					$('#multi-delete').prop('disabled', false);
+				}
+		
+				//location.reload();				
+			}
+			else {
+				$(this).attr('state', 'unselected');
+				$(this).text('Select All Records');		
+
+				$('#multi-select').prop('checked', false);
+				
+				imported_users_table.rows().every(function (row_index, table_loop, row_loop) {
+					let checkbox_element = $(this.data()[0]);					
+					$(this.node()).find('.ci-select').prop('checked', false);				
+				});
+
+				$('#multi-delete').prop('disabled', true);				
+			}		
+		});		
+		
+		function get_selected_contacts () {
+			let contact_id_list = [];
+			
+			$('.ci-select').each(function () {
+				contact_id_list.push($(this).attr('contact-id'));
+				$(this).closest('tr').addClass('hide-after-delete');
+			});
+			
+			return contact_id_list;
+		}
+		
+		
+		$('#multi-select').change(function () {
+		
+			if ($(this).prop('checked')) {
+				selected_contacts = get_selected_contacts();
+				$('.ci-select').prop('checked', true);
+				$('#multi-delete').prop('disabled', false);
+				
+				if (selected_contacts.length > 1) {
+					$('#multi-delete').prop('disabled', false);
+				}
+				
+			}
+			else {
+				selected_contacts = [];
+				$('tr').removeClass('hide-after-delete');
+				$('.ci-select').prop('checked', false);
+				$('#multi-delete').prop('disabled', true);
+			}
+					
+		});
+		
+		
+		$('.ci-select').change(function () {
+				
+			let contact_id 		 = $(this).attr('contact-id');
+			let contact_id_index = selected_contacts.indexOf(contact_id);
+		
+			if ($(this).prop('checked')) {
+				if (contact_id_index === -1) {
+					selected_contacts.push(contact_id);		
+					
+					$(this).closest('tr').addClass('hide-after-delete');
+					
+					if (num_of_contacts == selected_contacts.length) {
+						$('#multi-select').prop('checked', true);	
+						$('#multi-delete').prop('disabled', false);						
+					}
+					
+					//if (selected_contacts.length > 1) {
+						$('#multi-delete').prop('disabled', false);
+					//}							
+				}
+			}
+			else {	
+
+				$(this).closest('tr').removeClass('hide-after-delete');
+			
+				if (contact_id_index > -1) {
+					selected_contacts.splice(contact_id_index, 1);
+				}
+				
+				//console.log(selected_contacts);
+				if (selected_contacts.length < 1) {
+					$('#multi-delete').prop('disabled', true);
+				}				
+				
+				$('#multi-select').prop('checked', false);
+			}
+		});
+		
+		$('#multi-delete').click(function () {
+		
+			if ($('#select-all-records').attr('state', 'selected')) {
+			
+				swal({
+					title: "Are you sure?",
+					text: "You are about to delete every imported contact in your system. Do you really want to proceed?",
+					icon: "warning",
+					buttons: {
+						confirm: {
+							text: "Delete All!",
+							value: true,
+							visible: true,
+							className: "",
+							closeModal: true
+						},
+						cancel: {
+							text: "No",
+							value: null,
+							visible: true,
+							className: "",
+							closeModal: true				
+						}
+					},
+				    //buttons: true,
+				    dangerMode: true,
+				}).then((accept) => {
+					if (accept) {
+					
+						swal("Delected All", "All Records Deleted", "warning");					
+						bulk_delete_users();						
+					}
+					
+				});			
+			
+			}
+			else {
+			
+				bulk_delete_users();			
+			
+			}
+						
+			// console.log('Selected Contacts ', selected_contacts);
+			
+			function bulk_delete_users () {
+			
+				$.ajax({
+					url: '/userboard/multi-delete',
+					method: 'POST',
+					data: {'contact_id_list': selected_contacts},
+					beforeSend: function(xhr){
+						xhr.setRequestHeader('X-CSRFToken', jQuery("[name=csrfmiddlewaretoken]").val());
+					},				
+					success: function (response) {
+						$('.delete-contact-success').text(response.msg).show();
+						$('.hide-after-delete').hide();
+						setTimeout(function () {
+							location.reload();
+						}, 1000);
+					}
+				});	
+			
+			}
+					
+		});
+		
+		$(document).on('click', '.contact_add_user_tag', function (e) {
+		
+			e.preventDefault();
+			
+			let user_contact_tags = ['t1', 't2'];
+			let contact_id = 10357;
+
+			$.ajax({
+				url: '/userboard/update-user-tags',
+				method: 'POST',
+				data: {'tags': user_contact_tags, 'contact_id': contact_id},
+				beforeSend: function(xhr){
+					xhr.setRequestHeader('X-CSRFToken', jQuery("[name=csrfmiddlewaretoken]").val());
+				},				
+				success: function (response) {
+					/*
+					$('.delete-contact-success').text(response.msg).show();
+					$('.hide-after-delete').hide();
+					setTimeout(function () {
+						location.reload();
+					}, 1000);
+					*/
+				}
+			});	
+			
+		
+		});
+		
+		
+	</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Exactle</title>
+    <meta content="" name="descriptison">
+    <meta content="" name="keywords">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- libs CSS Files -->
+    <link href="{% static 'search/libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'search/libs/icofont/icofont.min.css' %}" rel="stylesheet">
+    <link href="{% static 'search/libs/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'search/libs/owl.carousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'search/libs/aos/aos.css' %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static 'search/css/style.css' %}" rel="stylesheet">
+
+    <script type="text/javascript" src="{% static 'search/js/countries.js' %}"></script>
+
+</head>
+
+<body>
+
+    <main id="main">
+
+        <div class="welcome-container">
+            <div class="welcome-note">
+                <h1 class="welcome-title">Welcome to</h1>
+                <img src="{% static 'search/img/logo.png' %}" alt="">
+                <div class="button-container">
+                    <a href="{% url 'login' %}" class="btn">Login</a>
+                    <a href="{% url 'signup' %}" class="btn">Register Yourself</a>
+                </div>
+            </div>
+        </div>
+
+    </main><!-- End #main -->
+    <!-- libs JS Files -->
+    <script src="{% static 'search/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'search/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'search/libs/jquery.easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'search/libs/owl.carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'search/libs/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'search/libs/aos/aos.js' %}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{% static 'search/js/main.js' %}"></script>
+
+</body>
+
+</html>

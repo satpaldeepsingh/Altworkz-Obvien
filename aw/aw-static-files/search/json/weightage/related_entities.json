@@ -1,0 +1,129 @@
+{
+	"hr": {
+		"aliases": ["human resource", "human resources"],
+		"related": ["recruitment", "recruiting", "hiring", "career"]
+	},
+	"it": {
+		"aliases": ["information technology", "Information Technology"],
+		"related": [
+			"web", "networks", "softwares", "hardware", "website", "technology", "css", "development"
+		]		
+	
+	},
+	"html": {
+		"aliases": ["hyper text markup language", "html5"],
+		"related": [
+			"web", "networks", "browser", "internet", "website", "technology", "css", "development", "markup", "xml", "frontend", "front end"
+		]
+	},
+	"css": {
+		"aliases": ["cascading style sheet"],
+		"related": [
+			"web", "network", "browser", "internet", "website", "technology", "html", "development", "frontend", "front end"
+		]		
+	},
+	"programming": {
+		"aliases": ["scripting", "software engineering"],
+		"related": [
+			"programmer", "coder", "developer", "computer", "software", "IT", "programmer", "c++", "java", "cobol", "pascal", "php", "programmer", "asp.net", "algo", "algorithms", "javascript", "ai", "visual studio", "gcc"
+		]
+	},
+	"c": {
+		"aliases": ["c lanaguage", "c programming language"],
+		"related": [
+			"programming", "development", "technology", "computer", "software", "graphics", "c++"
+		]		
+	},
+	"c++": {
+		"aliases": [""],
+		"related": [
+			"programming", "development", "technology", "computer", "software", "graphics", "c"
+		]	
+	},
+	"server": {
+		"aliases": [""],
+		"related": [
+			"apache", "windows server"
+		]		
+	},
+	"ai": {
+		"aliases": ["artificial intelligence"],
+		"related": [
+			"machine learning", "multi armed bandit"
+		]
+	},
+	"javascript": {
+		"aliases": ["Java Script", "java script"],
+		"related": [
+			"programming", "scripting", "technology", "web", "html", "css", "ajax", "frontend", "front end"
+		]	
+	
+	},
+	"graphics": {
+		"aliases": [""],
+		"related": [
+			"3d", "opengl", "2d", "photoshop", "corel", "games", "cad" 
+		]	
+	},
+	"os": {
+		"aliases": ["Operating Systems"],
+		"related": [
+			"linux", "windows", "mac", "ubuntu", "redhat", "centos", "android"
+		]	
+	},	
+	"database": {
+		"aliases": [""],
+		"related": [
+			"mysql", "sql", "sql server", "postgresql", "technology", "computer", "software", "it", "oracle", "microsoft", "data", "storage"
+		]	
+	},
+	"wordpress": {
+		"aliases": ["wp"],
+		"related": [
+			"php", "cmd", "website"
+		]
+	},
+	"website": {
+		"aliases": ["wp"],
+		"related": [
+			"html", "css", "javascript", "server", "browser", "computer", "mobile", "wordpress", "cms", "php", "asp.net", "social networking", "frontend", "backend"
+		]
+	},
+	"cms": {
+		"aliases": ["content management system"],
+		"related": [
+			"wordpress", "drupal", "joomla", "php", "backend"
+		]		
+	},
+	"hyper text markup language": {
+		"detail": "html"
+	},
+	"cascading style sheet": {
+		"detail": "css"
+	},
+	"software engineer": {
+		"detail": "programmer"
+	},
+	"software engineering": {
+	
+	},
+	"mysql": {
+		"aliases": ["MySQL", "My SQL", "my sql"],
+		"related": [
+			"databases"
+		]
+	},
+	"oil": {
+		"aliases": [""],
+		"related": [
+			"fuel", "hydrocarbons", "gas", "shell", "total parco", "bp"
+		]
+	
+	},
+	"fast": {
+		"aliases": ["national university of computer & emerging sciences", "national university of computer and engineering sciences"],
+		"related": [
+			"university", "nuces", "education", "Computer Science"
+		]
+	}
+}

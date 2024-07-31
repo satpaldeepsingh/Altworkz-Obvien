@@ -1,0 +1,14 @@
+{
+	"hr": ["human resource", "recruiter", "hiring manager"],
+	"it": ["information technology"],
+	"html": ["hyper text markup language", "html5"],
+	"css": ["cascading style sheet"],
+	"programming": ["software engineering", "coding"],
+	"c": ["c lanaguage", "c programming language", "c99", "c11"],
+	"ai": ["artificial intelligence", "machine learning"],
+	"javascript": ["javascript", "java script"],
+	"graphics": ["3d", "opengl", "2d", "photoshop", "corel", "games", "cad"],
+	"os": ["operating system"],	
+	"software engineer": ["programmer", "software developer"],
+	"lahore": ["lhr"]
+}

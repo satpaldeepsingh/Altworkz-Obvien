@@ -1,0 +1,177 @@
+{% extends 'templates/base.html' %} {% load static %} {% block 'css' %}
+<!--	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />-->
+<!--	<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css" />-->
+
+<!--    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" />-->
+<!--    <link type="text/css" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/css/dataTables.checkboxes.css" rel="stylesheet" />-->
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/b-1.7.0/b-colvis-1.7.0/b-html5-1.7.0/datatables.min.css"/>
+ 
+
+{% endblock%}
+<!-- ======= Search Section ======= -->
+{% block 'mainblock' %}
+	<section class="aw_section aw_section_peopleAPI">
+<!--		<div class="alert alert-success" role="alert" id="import_success">-->
+<!--			Contacts imported successfully-->
+<!--		</div>-->
+		<div class="alert alert-warning" role="alert" id="select_contacts_first">
+			Please select contacts first
+		</div>
+		<div class="aw_section_header">
+			<h2 class="aw_section_title">Import Contacts</h2>
+			<div class="aw_section_actions">
+				<!--Add buttons to initiate auth sequence and sign out-->
+				<button type="button" id="authorize_button" class="btn btn-primary" >
+					Login with LinkedIn
+				</button>
+				<button type="button" id="import-contacts" class="btn btn-primary" disabled>
+					Import Contacts
+				</button>				
+				<button type="button" id="signout_button" class="btn btn-danger" style="display: none" disabled>
+					Sign Out
+				</button>
+				
+				
+
+			</div>
+		</div>
+
+		<div class="aw_section_body">
+			<div class="aw_import_nav">
+				<ul class="aw_import_list">
+					<li><a href="/contacts">CSV</a></li>
+					<li><a href="/contacts/people-api">Google</a></li>
+					<li><a href="/contacts/facebook-contacts-import" class="work-in-progress">Facebook</a></li>
+					<li><a href="/contacts/twitter-contacts-import">Twitter</a></li>
+					<li class="active"><a href="/contacts/linkedin-contacts-import">LinkedIn</a></li>
+				</ul>
+			</div>
+			<div class="alert alert-primary" role="alert" id="label_import_contacts">
+				Your Google Contacts are loaded. You can import them into Altworkz using "Import Contacts" button!
+			</div>
+
+			<pre id="content" style="white-space: pre-wrap"></pre>
+			
+			{% csrf_token %}
+			
+			<!-- CloudSponge Content -->
+			
+			<!-- <a href="#" class="cloudsponge-launch">Pick Contacts</a> -->
+
+			<!-- CloudSponge Content -->
+			
+			<div class="row">
+				<div class="col-md-12">
+					<h5>Steps for Importing CSV</h5>
+					<p>You can request your connections data using LinkedIn's <a href="https://www.linkedin.com/psettings/member-data"><b>Get a copy of your data</b></a> feature. You can use these steps to import connections into Altworkz system.</p>
+					<ol>
+						<li>Sign-in into LinkedIn.</li>						
+						<li>Click <b>Me</b> on the right corner of top-menu bar.</li>
+						<li>Under <b>Account</b> heading, click <b>Settings & Privacy</b>.</li>
+						<li>Click <b>Get a copy of your data</b>.</li>
+						<li>Select <b>Connections</b> checkbox only and then click <b>Request archive</b>. You will be asked to provide your LinkedIn password. Enter password in prompt and click <b>Done</b> button.</li>
+						<li>You will be sent email when your data is ready.</li>
+						<li>Download the generated CSV file and import the file into <a href="https://www.altworkz.com/contacts/">CSV</a> section of Altworkz while selecting <i><u>LinkedIn connections CSV</u></i> for <b>Select CSV type</b> option.</li>
+					</ol>
+				</div>
+			</div>
+
+			<!-- Import Contacts Temp disable -->
+
+			
+			<table id="peoples" class="table table-striped table-bordered">
+				<thead class="thead-dark">
+					<tr>
+						<th><input class="dt-checkboxes" name="select_all" value="1" id="twitter-select-all" type="checkbox" /></th>
+						<th>Photo</th>
+						<th>Name</th>
+						<th>Connection Strength</th>
+						<th>Number </th>
+						<th>Email</th>
+						<th>Organization</th>
+						<th>Job title</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if twitter_friends %}
+						{% for friend in twitter_friends %}
+						<tr>
+							<td><input type="checkbox" class="twitter-select" id="tw-{{friend.id}}" contact-id="{{friend.id}}" /></td>
+							<td><img src="{{friend.photo}}" /></td>
+							<td>{{friend.name}}</td>
+							<td>{{friend.connection_strength|safe}}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>			
+						{% endfor %}
+					{% endif %}
+				</tbody>
+
+			</table>
+			
+			
+			<!-- Import Contacts Temp disable -->
+						
+		</div>
+	</section>
+
+{% endblock %} {% block 'js' %}
+
+<!--
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.js"></script>
+<script type="text/javascript" src="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.11/js/dataTables.checkboxes.min.js"></script>
+-->
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/b-1.7.0/b-colvis-1.7.0/b-html5-1.7.0/datatables.min.js"></script>
+
+<script src="{% static 'js/twitter-api.js' %}"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://api.cloudsponge.com/widget/qHBFskY_OFXBtWsVMS4nKQ.js"></script>
+
+<!-- Cloudsponge -->
+<script>
+
+</script>
+<!-- Cloudsponge -->
+
+<script>
+
+	{% if linkedin_lite_profile %}
+		
+		$("#import-contacts").show().prop('disabled', true);
+		//$("#authorize_button").hide();	
+		$("#signout_button").show();
+		
+		let linkedin_lite_profile = JSON.parse('{{linkedin_lite_profile|safe}}');
+		
+		//console.log(linkedin_lite_profile);
+		
+		let profile_str = `First Name: ${linkedin_lite_profile['firstName']['localized']['en_US']}, Last Name: ${linkedin_lite_profile['lastName']['localized']['en_US']}`;		
+		
+		swal("LinkedIn User Profile", profile_str);
+		
+	{% endif %}
+			
+	var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+		
+	$("#authorize_button").click(function () {
+	
+		//window.location.href="https://www.linkedin.com/oauth/v2/authorization?client_id=77awx9dduw0nez&redirect_uri=https://ps19testserver.com/contacts/linkedin-callback&state="+csrf+"&response_type=code&scope=r_liteprofile%20r_emailaddress";
+		//window.location.href="https://www.linkedin.com/oauth/v2/authorization?client_id=77awx9dduw0nez&redirect_uri=https://ps19testserver.com/contacts/linkedin-callback&state="+csrf+"&response_type=code&scope=r_liteprofile%20r_emailaddress%20w_member_social";
+		
+		window.location.href="https://www.linkedin.com/oauth/v2/authorization?client_id=774mkvff40jh88&redirect_uri=http://127.0.0.1:8002/contacts/linkedin-callback&state="+csrf+"&response_type=code&scope=r_liteprofile%20r_emailaddress%20r_1st_connections";
+		
+		//window.location.href="https://www.linkedin.com/oauth/v2/authorization?client_id=77awx9dduw0nez&redirect_uri=https://ps19testserver.com/contacts/linkedin-callback&state="+csrf+"&response_type=code&scope=r_compliance%20r_emailaddress";
+		 			
+	});
+	
+	$('.work-in-progress').click(function () {
+		event.preventDefault();
+		swal("In-Progress", "We are currently working on it. This feature will be available soon.", "info");
+	});	
+	
+
+</script>
+{% endblock %}

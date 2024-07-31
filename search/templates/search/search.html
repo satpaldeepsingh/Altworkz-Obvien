@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Exactle</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- libs CSS Files -->
+  <link href="{% static 'search/libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'search/libs/icofont/icofont.min.css' %}" rel="stylesheet">
+  <link href="{% static 'search/libs/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'search/libs/venobox/venobox.css' %}" rel="stylesheet">
+  <link href="{% static 'search/libs/owl.carousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+  <link href="{% static 'search/libs/aos/aos.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'search/css/style.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="container d-flex">
+
+      <div class="logo mr-auto">
+        <h1 class="text-light"><a href="index.html"><span>Exactle</span></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html"><img src="{% static 'search/img/logo.png" alt="" class="img-fluid"></a>-->
+      </div>
+
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Work</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li>
+            <div class="user-section">
+              <div class="user-image float-left">
+                <img src="http://exactle.net/assets/images/default.png" alt="">
+              </div>
+              <div class="user-name float-right">Farooq</div>
+            </div>
+          </li>
+        </ul>
+      </nav><!-- .nav-menu -->
+
+    </div>
+  </header><!-- End Header -->
+
+
+
+  <main id="main">
+
+    <!-- ======= Search Section ======= -->
+    <section class="search-container">
+      <div class="container">
+
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="300">
+          <div class="col-xl-10 col-lg-12">
+            <div class="form-group">
+              <input type="text" class="form-control" name="search" placeholder="Search" />
+              <button class="search-submit"><i class="icofont-ui-search"></i></button>
+              <button class="search-filter" data-toggle="modal" data-target="#filterModal">+Filters</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Search Section -->
+
+    <!-- ======= Team Section ======= -->
+    <section id="team" class="team">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 result-left">
+            <div class="section-title">
+              <h2 data-aos="fade-up">Search Results</h2>
+            </div>
+            <div class="row results-top">
+
+              <div class="col-lg-12 card" data-aos="fade-up">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img src="{% static 'search/img/team/team-1.jpg' %}" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h6 class="card-title">Walter White (Chief Executive Officer)</h6>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 card" data-aos="fade-up">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img src="{% static 'search/img/team/team-2.jpg' %}" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h6 class="card-title">Walter White (Chief Executive Officer)</h6>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 card" data-aos="fade-up">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img src="{% static 'search/img/team/team-3.jpg' %}" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h6 class="card-title">Walter White (Chief Executive Officer)</h6>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            <div class="section-title">
+              <h2 data-aos="fade-up">Web Results</h2>
+            </div>
+            <div class="row results-web">
+
+              <div class="col-lg-12 card" data-aos="fade-up">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img src="{% static 'search/img/team/team-1.jpg' %}" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h6 class="card-title">Walter White (Chief Executive Officer)</h6>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 card" data-aos="fade-up">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img src="{% static 'search/img/team/team-2.jpg' %}" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h6 class="card-title">Walter White (Chief Executive Officer)</h6>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 card" data-aos="fade-up">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img src="{% static 'search/img/team/team-3.jpg' %}" class="card-img" alt="...">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                      <h6 class="card-title">Walter White (Chief Executive Officer)</h6>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up">
+                <div class="member">
+                  <div class="member-img">
+                    <img src="{% static 'search/img/team/team-1.jpg' %}" class="img-fluid" alt="">
+                  </div>
+                  <div class="member-info">
+                    <h4>Walter White</h4>
+                    <span>Chief Executive Officer</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                <div class="member">
+                  <div class="member-img">
+                    <img src="{% static 'search/img/team/team-2.jpg' %}" class="img-fluid" alt="">
+                  </div>
+                  <div class="member-info">
+                    <h4>Sarah Jhonson</h4>
+                    <span>Product Manager</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                <div class="member">
+                  <div class="member-img">
+                    <img src="{% static 'search/img/team/team-3.jpg' %}" class="img-fluid" alt="">
+                  </div>
+                  <div class="member-info">
+                    <h4>William Anderson</h4>
+                    <span>CTO</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
+                <div class="member">
+                  <div class="member-img">
+                    <img src="{% static 'search/img/team/team-4.jpg' %}" class="img-fluid" alt="">
+                  </div>
+                  <div class="member-info">
+                    <h4>Amanda Jepson</h4>
+                    <span>Accountant</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+
+
+
+
+
+          </div>
+          <div class="col-lg-4 result-right">
+            <div class="member" data-aos="fade-up">
+              <div class="member-img">
+                <img src="{% static 'search/img/team/team-4.jpg' %}" class="img-fluid" alt="">
+              </div>
+              <div class="member-info">
+                <h4>Amanda Jepson</h4>
+                <span>Accountant</span>
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                  industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                  scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap
+                  into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
+                  release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
+                  software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                <div class="owl-carousel result-carousel" data-aos="fade-up">
+                  <div class="suggestion-card item">
+                    <a href="#"><img src="{% static 'search/img/team/team-1.jpg' %}" /></a>
+                  </div>
+                  <div class="suggestion-card item">
+                    <a href="#"><img src="{% static 'search/img/team/team-2.jpg' %}" /></a>
+                  </div>
+                  <div class="suggestion-card item">
+                    <a href="#"><img src="{% static 'search/img/team/team-3.jpg' %}" /></a>
+                  </div>
+                  <div class="suggestion-card item">
+                    <a href="#"><img src="{% static 'search/img/team/team-4.jpg' %}" /></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Team Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="container py-4">
+
+      <div class="text-center">
+        <div class="copyright">
+          &copy; Copyright <strong><span>Exactle</span></strong>. All Rights Reserved
+        </div>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+  <!-- libs JS Files -->
+  <script src="{% static 'search/libs/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'search/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'search/libs/jquery.easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'search/libs/owl.carousel/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'search/libs/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'search/libs/aos/aos.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'search/js/main.js' %}"></script>
+
+</body>
+
+</html>

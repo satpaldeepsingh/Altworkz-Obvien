@@ -1,0 +1,92 @@
+<html>
+    {% load static %}
+    <head>
+        <link href="{% static 'search/libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    </head>
+    <style>
+        div {
+            margin-top:10px;
+        }
+        #search {
+            margin-top:-4px;
+        }
+    </style>
+    <!-- <div class="container"> -->
+        <div class="row ml-1">
+            <div class="col col-6">
+                <input type="text" name="searchbar" id="searchbar" />
+                <button class="btn btn-primary btn-sm" id="search">Search</button>
+            </div>
+        </div>
+        <div id="response" class="ml-1">
+
+            <div id="original_order">
+
+            </div>
+
+            <div id="modified_order">
+
+            </div>
+
+        </div>
+        
+    <!-- </div> -->
+
+    <script src="{% static 'search/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'search/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            
+            $('#search').click(function () {
+            
+                var search_text = $('#searchbar').val();
+
+                var search_result;
+            
+                if (search_text.trim() != '') {
+                    $.ajax({
+                        console.log("HTML :",search_text.trim())
+                        url: 'http://localhost:8000/search/elastic-search-compare',
+                        method: 'POST',
+                        data: {query: search_text},
+                        console.log('data' ,data)
+                        success: function (response) {
+                            // $('#response').html(response);
+                            var search_results = JSON.parse(response);
+                            console.log(search_results);
+
+                            var head_row = '<tr><th>Name</th><th>Location</th><th>Industry</th><th>Headline</th><th>Skills</th></tr>';
+
+                            for (order in search_results) {
+
+                                result_order_type = search_results[order];
+
+                                result_rows = ''
+
+                                for (result_index in result_order_type) {
+
+                                    result_row = result_order_type[result_index]['_source'];
+
+                                    result_rows += `<tr><td>${result_row['first_name']} ${result_row['last_name']}</td><td>${result_row['location']}</td><td>${result_row['industry']}</td><td>${result_row['headline']}</td><td>${result_row['skills']}</td></tr>`;
+
+                                }
+
+                                $(`#${order}`).html(`<h4>${order.replace('_order', '').toUpperCase()}</h4><table>${head_row} ${result_rows}</table>`);
+
+                            }
+
+                            // console.log(search_results['original_order']);
+                            // console.log(search_results['modified_order']);
+
+                        }
+                    });
+                }
+                else {
+                    $('#response').html('<b>No input specified</b>');
+                }
+            
+            });
+
+        });
+    </script>
+</html>

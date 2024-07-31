@@ -1,0 +1,64 @@
+{
+  "search_results": [
+    {
+        "name":"Emileo Johnson",
+        "title": "Chief Executive Officer",
+        "description": "Mr. White has over 25 years of experience in IT industry. During his careers he worked for one of the most reputed companies",
+        "image": "search/img/team/team-1.jpg"
+    },
+    {
+        "name":"Alex Brown",
+        "title": "HR Manager",
+        "description": "Alex has been working in company since the beginning and played a key role in expanding new businesses",
+        "image": "search/img/team/team-2.jpg"
+
+    },
+    {
+        "name":"William Green",
+        "title": "Chief Technology Officer",
+        "description": "",
+        "image": "search/img/team/team-3.jpg"
+    }
+  ],
+  "web_results": [
+    {
+        "name":"Amanda Jepson",
+        "title": "Accountant",
+        "description": "Ms. Amanda has been working as an accountant in company since last 2 years.",
+        "image": "search/img/team/team-4.jpg"
+    },
+    {
+        "name":"Sarah Johnson",
+        "title": "HR Manager",
+        "description": "Alex has been working in company since the beginning and played a key role in expanding new businesses",
+        "image": "search/img/team/team-2.jpg"
+
+    }
+  ],
+  "suggestions": [
+    {
+        "name":"Jenny Watson",
+        "title": "Fashion Designer ",
+        "description": "Mr. White has over 25 years of experience in IT industry. During his careers he worked for one of the most reputed companies",
+        "image": "search/img/blog-author.jpg"
+    },
+    {
+        "name":"Rebecca Sylvester",
+        "title": "Customer Relations Officer",
+        "description": "Mr. White has over 25 years of experience in IT industry. During his careers he worked for one of the most reputed companies",
+        "image": "search/img/comments-3.jpg"
+    },
+    {
+        "name":"Billy Smith",
+        "title": "Supply Chain Officer",
+        "description": "Mr. White has over 25 years of experience in IT industry. During his careers he worked for one of the most reputed companies",
+        "image": "search/img/comments-5.jpg"
+    },
+    {
+        "name":"Blanca Miguel",
+        "title": "Legal Officer",
+        "description": "Mr. White has over 25 years of experience in IT industry. During his careers he worked for one of the most reputed companies",
+        "image": "search/img/comments-1.jpg"
+    }
+  ]
+}

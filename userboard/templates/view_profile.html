@@ -1,0 +1,99 @@
+{% extends 'templates/base.html' %} {% load static %}
+
+{% block 'css' %}
+
+<link href="{% static 'css/tags-input.css' %}" rel="stylesheet" />
+
+{% endblock %}
+<!-- ======= user board Section ======= -->
+{% block 'mainblock' %}
+
+<section class="aw_section aw_section_user_profile">
+	<!-- <h2 class="aw_section_title">User Profile</h2> -->
+	<div class="card">
+		<img class="card-img header-image" src="{% static 'img/cover-profile.jpg' %}" />
+		<div class="card-body">
+			{% if context.contact.photo %}
+			<img class="card-img " src="{{ context.contact.photo }}" />
+			{% else %}
+			<img class="card-img" src="{% static 'img/avatar.png' %}" />
+			{% endif %}
+
+			<div class="row">
+				<div class="col">
+					<h5 class="card-title">{{ context.contact.first_name }} {{ context.contact.middle_name }}
+						{{ context.contact.last_name }}</h5>
+					{%for job in  context.jobs%}
+						{%for organization in job.organization.all%}
+							{% if forloop.parentloop.counter == 1 %}
+								{% if job.job_title %}
+									<p class="card-text"><i class="far fa-folder"></i> {{job.job_title|title}}</p>
+								{% else %}
+									<p class="card-text"><i class="far fa-folder"></i> Chief Operating Officer</p>
+								{% endif %}
+								{% if organization.organization_name %}
+									<p class="card-text"><i class="far fa-building"></i>  {{organization.organization_name|title}}</p>
+								{% else %}
+									<p class="card-text"><i class="far fa-folder"></i> Powersoft19</p>
+								{% endif %}
+							{% endif %}
+						{% endfor%}
+					{% endfor%}
+				</div>
+				<div class="col-4">
+					{% if context.contact.country %}
+					<p class="card-text"><i class="fas fa-globe"></i>  {{ context.contact.city|title }}, {{ context.contact.country|title }}</p>
+					{% else %}
+						<p class="card-text"><i class="fas fa-globe"></i>  Lahore, Pakistan</p>
+					{% endif %}
+
+					{% if context.contact_email.0.contact_email_primary %}
+						<p class="card-text"><i class="far fa-envelope"></i>   {{ context.contact_email.0.contact_email_primary }}</p>
+					{% else %}
+						<p class="card-text"><i class="far fa-envelope"></i>  info@gmail.com</p>
+					{% endif %}
+					{% if context.contact_number.0.contact_number_primary %}
+						<p class="card-text"><i class="fas fa-phone"></i>  {{ context.contact_number.0.contact_number_primary }}</p>
+					{% else %}
+						<p class="card-text"><i class="fas fa-phone"></i>  9213456789</p>
+					{% endif %}
+				</div>
+			</div>
+			<a href="" class="btn btn-primary mt-3">Share Network</a>
+		</div>
+	</div>
+	<div class="aw_section_user_profile_detail">
+		<div class="row">
+			<div class="col-12">
+				<h5>About</h5>
+				<p class="mb-4">
+					{% if context.contact_description.0.description %}
+						{{ context.contact_description.0.description|truncatechars:500}}
+					{% else %}
+						The University of Engineering and Technology, Lahore is a public university located in Lahore, Punjab, Pakistan specializing in science, technology, engineering and mathematics subjects. It is the oldest and one of the most selective engineering institutions in Pakistan.
+					{% endif %}
+
+				</p>
+			</div>
+			<div class="col-12">
+				<h5>Education</h5>
+				{%for education in context.educations%}
+					{% if context.educations %}
+						{%for school in education.school.all%}
+							{% if forloop.parentloop.counter == 1 %}
+								{% if school.school_name %}
+									<p class="mb-3">{{school.school_name}}</p>
+								{% else %}
+									<p class="mb-3">University of Engineering & Technology Lahore</p>
+								{% endif %}
+							{% endif %}
+						{% endfor%}
+					{% endif %}
+				{% endfor%}
+			</div>
+		</div>
+	</div>
+
+</section>
+
+{% endblock %}

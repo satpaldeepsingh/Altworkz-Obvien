@@ -1,0 +1,34 @@
+<html>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+<button class="btn btn-primary" id="twitter-login">Twitter Login</button>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+
+	$(document).ready(function () {
+		
+		$('#twitter-login').click(function () {
+		
+			$.ajax({
+				url: 'twitter-token',
+				success: function (response) {
+					console.log(response);
+					//window.open(response.url, "", "height=400,width=800");
+					window.open(response.url);
+					
+				}
+			});
+			
+		
+		});
+		
+	});
+
+</script>

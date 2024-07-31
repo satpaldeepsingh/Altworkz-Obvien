@@ -1,0 +1,116 @@
+{% extends 'templates/base.html' %} {% load static %} 
+{% block 'unauthenticatedblock' %}
+
+<div class="aw_user_reg_holder">
+
+	<div class="aw_reg_logo">
+		<img src="{% static 'img/obvien.png' %}" alt="" />
+	</div>
+
+
+	<div class="aw_user_form_holder">
+			{% if messages %}
+			<div class="alert alert-success" role="" >
+				{% for message in messages %}
+						{{ message }}
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		<form class="aw_user_form" method="post">
+
+			{% csrf_token %} {{ form.as_p }}
+			<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"> 
+			Please invite your friends to join our community by providing their email address.
+			<div class="form-group row">
+				<label for="input" class="col-2 col-form-label">Email-Address</label>
+				<div class="col-10">
+					<input type="text" name="user_name" class="form-control" placeholder="Email-Address" multiple>
+					</div>
+			</div>
+
+
+
+
+			<div class="aw_user_form_switch" multiple>
+
+				<div class="have_an_accoutn">
+					Already have an account? <a href="/accounts/login">Login</a>
+				</div>
+				
+				<div class="aw_user_form_submit">
+					<button class="btn btn-primary" type="submit">Sign up</button>
+				</div>
+
+			</div> <!-- /.aw_user_form_switch -->
+			
+		</form>
+		<!-- Wants to Invite your friends to join the Community. Click  -->
+			<!-- <button id="invitation"class="btn btn-danger" onclick="togglePopup()">Invite Users</button> -->
+	
+			
+	</div> <!-- /.welcome_card -->
+
+</div>
+
+
+  {% endblock%}
+
+{% block 'js' %}
+		
+		<!-- <link href="http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/"> -->
+ <script src='https://www.google.com/recaptcha/api.js?render={{recaptcha_site_key}}'></script> 
+	<script>
+		
+	// /http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
+	// 	$(document).ready(function() {
+		
+	// 		$('input[name="user_name"]').tagsinput();
+			
+	// 		$('.bootstrap-tagsinput input').on('focus', function() {
+	// 			$(this).closest('.bootstrap-tagsinput').addClass('has-focus');
+	// 		}).on('blur', function() {
+	// 			$(this).closest('.bootstrap-tagsinput').removeClass('has-focus');
+	// 		});
+			
+	// 	});  
+		
+
+		$(document).ready(function () {
+			grecaptcha.ready(function() {
+				grecaptcha.execute('{{recaptcha_site_key}}', {action: "/signup/"}).then(function(token) {
+					document.getElementById('g-recaptcha-response').value = token;
+				});
+			});			
+		
+		
+			var field_placeholders = {
+				'username': 'Username',
+				'password1': 'Password',
+				'password2': 'Confirm Password',
+
+			};
+
+			for (field in field_placeholders) {
+				$(`#id_${field}`).attr('placeholder', field_placeholders[field]);
+				console.log(field);
+			}
+		});
+		
+		// input.addeventListener('keyup', function(e) {
+		// 	if (e.key === 'Enter') {
+		// 		tags.push(input.value);
+		// 		addTags();
+		// 		input.value = '';
+		// 	}
+		// });
+	
+
+		
+		// function togglePopup() {
+		// 	$('.content').toggle();
+		// };
+
+	</script>
+{% endblock %}
+

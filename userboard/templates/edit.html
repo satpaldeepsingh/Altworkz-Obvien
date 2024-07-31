@@ -1,0 +1,344 @@
+{% extends 'templates/base.html' %} {% load static %}
+
+{% block 'css' %}
+
+	<link href="{% static 'css/tags-input.css' %}" rel="stylesheet" />
+
+{% endblock %}
+
+<!-- ======= user board Section ======= -->
+{% block 'mainblock' %}
+
+<section class="aw_section aw_section_edituser">
+
+	<div class="aw_section_body">
+		{% if messages %}
+			<div class="alert alert-danger" role="" >
+				{% for message in messages %}
+					{{ message }}
+				{% endfor %}
+			</div>
+		{% endif %}
+
+		<div class="aw_back_action">
+			<a href="/userboard"><i class="fas fa-arrow-left"></i>Back to user imported contacts</a>
+		</div>
+
+		<form id="user-personal-details" >
+
+			{% csrf_token %}
+			<div class="personal_information">
+				<div class="alert alert-success updated-contact-success" role="alert">
+					Contact details successfully updated!
+				</div>
+				<div class="alert alert-danger updated-contact-danger" role="alert">
+
+				</div>
+				<h3>Personal Information</h3>
+				<div class="personal_info_row">
+
+<!--					<div class="profile_display_image">-->
+<!--						<figure>-->
+<!--							{% if context.contact.photo %}-->
+<!--								<img src="{{ context.contact.photo }}" />-->
+<!--							{% else %}-->
+<!--								<img src="{% static 'img/avatar.png' %}" />-->
+<!--							{% endif %}-->
+<!--&lt;!&ndash;							<label class="change_pic_btn" for="changeProfilePic">&ndash;&gt;-->
+<!--&lt;!&ndash;								Change&ndash;&gt;-->
+<!--&lt;!&ndash;								<input id="changeProfilePic" type="file" />&ndash;&gt;-->
+<!--&lt;!&ndash;							</label>&ndash;&gt;-->
+<!--						</figure>-->
+<!--					</div>-->
+
+					<div class="personal_info_detail">
+
+						<div class="form-row">
+
+							<div class="form-group col-md-4">
+								<label for="first_name">First Name:</label>
+								<input type="text" class="form-control" name="first_name" id="first_name" required value="{{ context.contact.first_name }}" />
+							</div>
+
+							<div class="form-group col-md-4">
+								<label for="middle_name">Middle Name:</label>
+								<input type="text" class="form-control" name="middle_name" id="middle_name" value="{{ context.contact.middle_name }}" />
+							</div>
+
+							<div class="form-group col-md-4">
+								<label for="last_name">Last Name:</label>
+								<input type="text" class="form-control" name="last_name" id="last_name" required value="{{ context.contact.last_name }}" />
+							</div>
+
+							<div class="form-group col-md-4">
+								<label for="email">Email:</label>
+								<input type="email" class="form-control" name="email" id="email" value="{{ context.contact_email.0.contact_email_primary }}" />
+							</div>
+
+							<div class="form-group col-md-4">
+								<label for="phone">Phone:</label>
+								<input type="text" class="form-control" name="phone" id="phone" value="{{ context.contact_number.0.contact_number_primary }}" />
+							</div>
+
+							<div class="form-group col-md-4">
+								<label for="country">Country:</label>
+								<input type="text" class="form-control" name="country" id="country" value="{{ context.contact.country }}" />
+							</div>
+
+							<div class="form-group col-md-8">
+								<label for="description">Description:</label>
+								<textarea type="text" class="form-control" rows="6" name="description" id="description">{{ context.contact_description.0.description }}</textarea>
+							</div>
+
+						</div>
+
+					</div>
+				
+				</div>
+			</div>
+
+			<div class="education_info">
+				<h3>Educations</h3>
+				{%for education in context.educations%}
+					{% if context.educations %}
+						{%for school in education.school.all%}
+							<div class="form-row">
+									<div class="form-group col-md-3">
+										<label for="school_{{ forloop.parentloop.counter }}">School:</label>
+										<input type="text" class="form-control" name="school_{{ forloop.parentloop.counter }}" data-id="{{school.id}}" id="school_{{ forloop.parentloop.counter }}" value="{{school.school_name}}" />
+									</div>
+									<div class="form-group col-md-3">
+										<label for="school_abbreviation_{{ forloop.parentloop.counter }}">School Abbreviation:</label>
+										<input type="text" class="form-control" name="school_abbreviation_{{ forloop.parentloop.counter }}" id="school_abbreviation_{{ forloop.parentloop.counter }}" value="{{school.school_abbreviation}}" />
+									</div>
+									<div class="form-group col-md-3">
+										<label for="school_start_year_{{ forloop.parentloop.counter }}">School Start Year:</label>
+										<input type="text" class="form-control" name="school_start_year_{{ forloop.parentloop.counter }}" data-id="{{education.id}}"  id="school_start_year_{{ forloop.parentloop.counter }}" value="{{education.school_start_year}}" />
+									</div>
+									<div class="form-group col-md-3">
+										<label for="school_end_year_{{ forloop.parentloop.counter }}">School End Year:</label>
+										<input type="text" class="form-control" name="school_end_year_{{ forloop.parentloop.counter }}" id="school_end_year_{{ forloop.parentloop.counter }}" value="{{education.school_end_year}}" />
+									</div>
+							</div>
+						{% endfor%}
+					{% endif %}
+				{% endfor%}
+			</div>
+
+			<div class="organization_info">
+
+				<h3>Organizations</h3>
+				{%for job in  context.jobs%}
+						{%for organization in job.organization.all%}
+							<div class="form-row">
+								<div class="form-group col-md-3">
+									<label for="job_title_{{forloop.parentloop.counter}}">Job Title</label>
+									<input class="form-control" type="text" name="job_title_{{forloop.parentloop.counter}}" id="job_title_{{forloop.parentloop.counter}}" data_id="{{job.id}}"  value="{{job.job_title}}" />
+								</div>
+								<div class="form-group col-md-3">
+									<label for="organization_name_{{forloop.parentloop.counter}}">Organization Name</label>
+									<input type="text" class="form-control" name="organization_name_{{forloop.parentloop.counter}}" data-id="{{organization.id}}" id="organization_name_{{forloop.parentloop.counter}}" value="{{organization.organization_name}}" />
+								</div>
+								<div class="form-group col-md-3">
+									<label for="job_start_date_{{forloop.parentloop.counter}}">Job Start Date</label>
+									<input class="form-control" type="text" name="job_start_date_{{forloop.parentloop.counter}}" id="job_start_date_{{forloop.parentloop.counter}}" value="{{job.job_start_date}}" />
+								</div>
+								<div class="form-group col-md-3">
+									<label for="job_end_date_{{forloop.parentloop.counter}}">Job End Date</label>
+									<input class="form-control" type="text" name="job_end_date_{{forloop.parentloop.counter}}" id="job_end_date_{{forloop.parentloop.counter}}" value="{{job.job_end_date}}" />
+								</div>
+							</div>
+						{% endfor%}
+				{% endfor%}
+			</div>
+
+			<div class="social_info">
+
+				<h3>Socials</h3>
+				<div class="form-row">
+					<div class="form-group col-md-4">
+						<label for="fb_profile_url">Facebook</label>
+						<input class="form-control" type="text" name="fb_profile_url" id="fb_profile_url" value="{{ context.social_fb }}" />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="twitter_profile_url">Twitter</label>
+						<input class="form-control" type="text" name="twitter_profile_url" id="twitter_profile_url" value="{{ context.social_tw }}" />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="linkedin_profile_url">LinkedIn</label>
+						<input class="form-control" type="text" name="linkedin_profile_url" id="linkedin_profile_url" value="{{ context.social_linkedin }}" />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="bloomberg_profile_url">Bloomberg</label>
+						<input class="form-control" type="text" name="bloomberg_profile_url" id="bloomberg_profile_url" value="{{ context.social_bloomberg }}" />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="tags">Tags</label>
+						<input class="form-control" type="text" data-role="tagsinput" value= "{% for tag in context.tags%} {{tag.0.name|add:","}} {% endfor%}"   placeholder="Add tags" name="tags" />
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id="user_contact_id" value="{{context.contact.id}}"/>
+			<button class="btn btn-primary" type="button" id="updateUserContact">Update</button>
+		</form>
+	</div>
+</section>
+
+{% endblock %} 
+
+{% block 'js' %}
+
+	<script type="text/javascript" src="{% static 'js/tags-input.js' %}"></script>
+	<script>
+		$(document).on('click', '#updateUserContact', function(e){
+			var email = $("#email").val();
+			var phone = $("#phone").val();
+			var first_name = $("#first_name").val();
+			var last_name = $("#last_name").val();
+			if (first_name == ''){
+				$(".updated-contact-danger").html("Please enter First Name (required)");
+				$('.updated-contact-danger').show();
+				return false;
+			}
+			else if (last_name == ''){
+				$(".updated-contact-danger").html("Please enter last Name (required)");
+				$('.updated-contact-danger').show();
+				return false;
+			}
+			else if (email != ''){
+				if( !validateEmailAddress(email)) {
+					$(".updated-contact-danger").html("Please enter an Email address in the correct format, like <b>name@example.com</b> ");
+					$('.updated-contact-danger').show();
+					return false;
+				}
+			}
+            else if (phone != ''){
+				if(!validatePhoneNumber(phone)){
+					$(".updated-contact-danger").html("Please enter Phone # in the correct format, like <b>123456789</b> ");
+					$('.updated-contact-danger').show();
+					return false;
+				}
+			}
+            updateUserDetails();
+        });
+		function updateUserDetails() {
+			user_update_details = {};
+			var contact_id = $("#user_contact_id").val();
+			var first_name = $("#first_name").val();
+			var middle_name = $("#middle_name").val();
+			var last_name = $("#last_name").val();
+			var email = $("#email").val();
+
+			var phone = $("#phone").val();
+			var country = $("#country").val();
+			var description = $("#description").val();
+			var fb_profile_url = $("#fb_profile_url").val();
+			var twitter_profile_url = $("#twitter_profile_url").val();
+			var linkedin_profile_url = $("#linkedin_profile_url").val();
+			var bloomberg_profile_url = $("#bloomberg_profile_url").val();
+			var tags = $('input[name="tags"]').val();
+			user_update_details['contact_id'] = contact_id;
+			user_update_details['first_name'] = first_name;
+			user_update_details['middle_name'] = middle_name;
+			user_update_details['last_name'] = last_name;
+			user_update_details['email'] = email;
+			user_update_details['phone'] = phone;
+			user_update_details['country'] = country;
+			user_update_details['description'] = description;
+			user_update_details['fb_profile_url'] = fb_profile_url;
+			user_update_details['twitter_profile_url'] = twitter_profile_url;
+			user_update_details['linkedin_profile_url'] = linkedin_profile_url;
+			user_update_details['bloomberg_profile_url'] = bloomberg_profile_url;
+			user_update_details['tags'] = tags;
+			// schools info
+			var school_rows = $('div.education_info .form-row').length;
+			// we have got school_rows number of education records
+			var schools = [];
+			for (var x=1; x<= school_rows; x++){
+				var school_obj = {};
+				var school_name = $('#school_'+x).val();
+				var school_abbr = $('#school_abbreviation_'+x).val();
+				var school_start = $('#school_start_year_'+x).val();
+				var school_end = $('#school_end_year_'+x).val();
+				var school_id = $('#school_'+x).attr('data-id');
+				var education_id = $('#school_start_year_'+x).attr('data-id');
+				school_obj['school_name'] = school_name;
+				school_obj['school_abbr'] = school_abbr;
+				school_obj['school_start'] = school_start;
+				school_obj['school_end'] = school_end;
+				school_obj['school_id'] = school_id;
+				school_obj['education_id'] = education_id;
+				schools.push(school_obj);
+			}
+
+			// organization info
+			var organization_rows = $('div.organization_info .form-row').length;
+			console.log(organization_rows)
+			// we have got organization number of education records
+			var organizations = [];
+			for (var x=1; x<= organization_rows; x++){
+				var organization_obj = {};
+				var organization_name = $('#organization_name_'+x).val();
+				var organization_job = $('#job_title_'+x).val();
+				var job_id = $('#job_title_'+x).attr('data_id');
+				var organization_id = $('#organization_name_'+x).attr('data-id');
+				var organization_start = $('#job_start_date_'+x).val();
+				var organization_end = $('#job_end_date_'+x).val();
+				organization_obj['organization_name'] = organization_name;
+				organization_obj['organization_job'] = organization_job;
+				organization_obj['job_id'] = job_id;
+				organization_obj['organization_id'] = organization_id;
+				organization_obj['organization_start'] = organization_start;
+				organization_obj['organization_end'] = organization_end;
+				organizations.push(organization_obj);
+			}
+			console.log('user update details ', user_update_details);
+     		$.ajax({
+                url: '/userboard/update/' + contact_id,
+                dataType : 'json',
+				method: 'POST',
+				beforeSend: function(xhr){
+					xhr.setRequestHeader('X-CSRFToken', jQuery("[name=csrfmiddlewaretoken]").val());
+				},				
+                data: {user_update_details: JSON.stringify(user_update_details), schools: JSON.stringify(schools), organizations: JSON.stringify(organizations)},
+                success: function(data){
+<!--                	if (data.email_error != ''){-->
+<!--                			$(".updated-contact-danger").html(data.email_error);-->
+<!--							$('.updated-contact-danger').show();-->
+
+<!--                	}-->
+<!--                	else{-->
+<!--                		$('.updated-contact-danger').hide();-->
+<!--                		$(".updated-contact-success").fadeTo(2000, 500).slideUp(500, function(){-->
+<!--							$('.updated-contact-success').slideUp(500);-->
+<!--						});-->
+<!--						setTimeout(function(){// wait for 5 secs(2)-->
+<!--							   location.reload(); // then reload the page.(3)-->
+<!--						  }, 2000);-->
+<!--                	}-->
+						$('.updated-contact-danger').hide();
+                		$(".updated-contact-success").fadeTo(2000, 500).slideUp(500, function(){
+							$('.updated-contact-success').slideUp(500);
+						});
+						setTimeout(function(){// wait for 5 secs(2)
+							   location.reload(); // then reload the page.(3)
+						  }, 2000);
+
+
+					},
+                error: function(resp){
+                    console.log(resp);
+                }
+            });
+		}
+		function validatePhoneNumber($phone) {
+		  var phoneReg =  /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+		  return phoneReg.test( $phone );
+		}
+		function validateEmailAddress($email) {
+		  var emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+		  return emailReg.test( $email );
+		}
+	</script>
+
+ {% endblock %}

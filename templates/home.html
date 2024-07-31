@@ -1,0 +1,52 @@
+{% extends 'templates/base.html' %} {% load static %}
+{% block 'homeblock' %}
+
+<section class="aw_section aw_section_mission">
+
+    <div class="aw_section_body">
+        <div class="aw_section_content">
+            <h2 class="aw_section_title">Our Mission</h2>
+            <p>Our search engine allows you to monitor all public social mentions in social networks and web. Quickly measure and track what people are saying about your company, brand, product, or service in one easy to use dashboard, which would streamline your online presence tracking efforts and be a huge time saver.</p>
+        </div>
+        <div class="aw_section_thumb">
+            <figure>
+                <img src="{% static 'img/altworkz-mission.png' %}" alt=""/>
+            </figure>
+        </div>
+    </div>
+
+</section>
+
+<section class="aw_section aw_section_assistant_plan">
+
+    <div class="aw_section_body">
+        <div class="aw_section_thumb">
+            <figure>
+                <img src="{% static 'img/assist-plan.png' %}" alt=""/>
+            </figure>
+        </div>
+        <div class="aw_section_content">
+            <h2 class="aw_section_title">Let our unique Assistant Plan</h2>
+            <p>No more worries that important customer feedback will be missing, we’ve got you covered, just set up email alerts and be notified about No more worries that important customer feedback.</p>
+        </div>
+    </div>
+
+</section>
+
+<section class="aw_section aw_section_synchronize">
+
+    <div class="aw_section_body">
+        <div class="aw_section_content">
+            <h2 class="aw_section_title">Synchronize your social life, email and contacts</h2>
+            <p>Analyze and assess the performance of your contents across different platforms with the help of various charts and generated reports. Check up the spikes of users activity and manage the crisis before it went viral.</p>
+        </div>
+        <div class="aw_section_thumb">
+            <figure>
+                <img src="{% static 'img/synchronize.png' %}" alt=""/>
+            </figure>
+        </div>
+    </div>
+
+</section>
+
+{% endblock  %}

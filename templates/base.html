@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+	<!-- libs CSS Files -->
+	<link href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/fontawesome/css/all.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'libs/swiper/swiper-bundle.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'css/preloader.css' %}" rel="stylesheet" />
+	<link href="{% static 'css/tabular-input.css' %}" rel="stylesheet" />
+	<link href="{% static 'css/bootstrap-slider.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'css/easy-autocomplete.min.css' %}" rel="stylesheet"/>
+<!--	<link href="{% static 'css/select2.min.css' %}" rel="stylesheet" />-->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link href="{% static 'css/simplePagination.css' %}" rel="stylesheet" />
+
+	{% block 'css' %}{% endblock %}
+
+	<!-- Template Main CSS File -->
+	<link href="{% static 'css/style.css' %}" rel="stylesheet" />
+
+	<title>Obvien</title>
+
+</head>
+
+<body>
+
+	{% if not user.is_authenticated %}
+		{% if request.path == "/" %}
+		<div class="aw_wrapper">
+
+			<!--  Header -->
+			{% include 'includes/header.html' %}
+			<!-- End Header -->
+
+			<!-- main -->
+			<main class="aw_main" id="aw_main1">
+
+				<div class="container">
+					{% block 'homeblock' %}{% endblock %}
+				</div>
+
+			</main>
+			<!-- End #main -->
+
+			<!-- Footer -->
+				{% include 'includes/footer.html' %}
+			<!-- End Footer -->
+
+		</div>
+		{% else %}
+
+		<div class="aw_registration">
+			<div class="aw_registration_inner">
+				{% block 'unauthenticatedblock' %}{% endblock %}
+			</div>
+		</div>
+
+		{% endif %}
+	{% else  %}
+
+		<div class="aw_wrapper">
+
+			<!--  Header -->
+				{% if  user.is_authenticated %}
+					{% include 'includes/header.html' %}
+				{% endif %}
+			<!-- End Header -->
+
+			<!-- main -->
+			<main class="aw_main" id="aw_main">
+
+				<div class="container">
+
+					{% block 'mainblock' %}{% endblock %}
+
+					<!-- Search blocks -->
+					{% block 'searchresults' %}{% endblock %}
+
+
+
+				</div>
+
+			</main>
+			<!-- End #main -->
+
+			<!-- Footer -->
+			{% include 'includes/footer.html' %}
+			<!-- End Footer -->
+
+		</div>
+
+	{% endif %}
+	
+	<!-- Modal (Intro) -->
+    <div class="modal fade" id="modalIntro">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="modal-intro-body" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">OK</button>		
+				</div>		
+            </div>
+        </div>
+    </div>	
+	
+
+	<!-- Modal Mutual Connections -->
+    <div class="modal fade" id="modalMutualConnections">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mutual Connections</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+					<ul class="mdl_mutual_connection_list">
+
+					</ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<!-- Modal Tweets/Comments/Posts -->
+    <div class="modal fade" id="modalPosts">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contact Posts</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="twitter-wjs" class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<!-- Modal Twitter Login -->
+    <div class="modal fade" id="twitterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Twitter Modals</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	<div class="modal" tabindex="-1" id="contacts-results" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Contacts Import Results</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="contatcs-imports-messages"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal" tabindex="-1" id="search-results-results" role="dialog">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Save Search</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			  <div class="alert alert-danger save-search-name-alert" role="alert">
+				  Search Name is required!
+			  </div>
+			  <div id="save-search-input">
+				<input class="d-block w-100 px-3 py-1 rounded border border-secondary" id="save-search-name-input" name="savedSearchName" type="text" placeholder="Name This Search" value="" required>
+			  </div>
+			  <div class="d-flex mt-2">
+				  <span><input type="checkbox" id="save-filter-weightages" checked /></span>
+				  <span class="ml-2 y-1">Also save filter weights</span>
+			  </div>
+		  </div>
+		  <div class="modal-footer">
+			  <div class="row">
+				  <span class="d-flex justify-content-start">
+				  <button type="button" class="btn btn-sm btn-primary" onClick="saveSearchSubmit()" id="submitSearchName">Submit</button>
+			  </div>
+
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal" tabindex="-1" id="delete-search-results" role="dialog">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Delete Save Search</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			  Are you sure you want to delete "<span id="search-del"></span>" search?
+			  <input type="hidden" id="search_input_id" value="">
+		  </div>
+		  <div class="modal-footer">
+			  <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">No</button>
+			  <button type="button" class="btn btn-sm btn-primary" id="deleteSubmitSearchName">Yes</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="modal" tabindex="-1" id="delete-import-contact" role="dialog">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Delete Import Contact</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			  Are you sure you want to delete this <b>"<span id="del-fname"></span> <span id="del-lname"></span>"</b> contact?
+
+		  </div>
+			<input type="hidden" id="del-contact-id" value="" >
+		  <div class="modal-footer">
+			  <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">No</button>
+			  <button type="button" class="btn btn-sm btn-primary" id="importContactDeleted">Yes</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+    <!-- libs JS Files -->
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'libs/jquery.easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'libs/swiper/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'libs/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/jquery.preloader.js' %}"></script>
+    <script src="{% static 'js/tabular-input.js' %}"></script>
+	<script src="{% static 'js/bootstrap-slider.min.js' %}"></script>
+<!--	<script src="{% static 'libs/jquery/jquery.easy-autocomplete.min.js' %}"></script>-->
+	<script src="{% static 'libs/jquery/jquery.easy-autocomplete.js' %}"></script>
+<!--	<script src="{% static 'libs/jquery/select2.min.js' %}"></script>-->
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="{% static 'js/jquery.simplePagination.js' %}"></script>
+
+
+    {% block 'js' %}{% endblock %}
+	<!-- Template Main JS File -->
+    <script src="{% static 'js/main.js' %}"></script>
+	<script>
+		function saveSearchSubmit() {
+		  var seachVal =  document.getElementById("save-search-name-input").value;
+		  if (seachVal == "") {
+			$('.save-search-name-alert').show();
+		  }
+		  else{
+		  	 $('#search-results-results').modal('hide');
+		  }
+		}
+		function deleteSaveSearch(data) {
+		  $('#delete-search-results').modal('show');
+		  var seachName = data.getAttribute("data-name");
+		  document.getElementById("search-del").innerHTML = seachName;
+		  var seachId = data.getAttribute("data-id");
+		  document.getElementById("search_input_id").value = seachId;
+		}
+		function saveSearchNameModel() {
+			var searchKeyword =  document.getElementById("search-text").value;
+			  if(searchKeyword == ""){
+				$('.search-validation-msg').show();
+			  }
+			  else{
+			  	$('#save-search-name-input').val('');
+		  		$('#search-results-results').modal('show');
+			  }
+		}
+
+		$("#submitSearchName").on("click", function (e) {
+			
+			var seachName =  document.getElementById("save-search-name-input").value;
+			var searchKeyword =  document.getElementById("search-text").value;
+			if (seachName == "") {
+				$('.save-search-name-alert').show();
+			}
+			else{
+				$('#search-results-results').modal('hide');
+				$('.save-search-name-alert').hide();
+				search_obj['seachName'] = seachName;
+				search_obj['search_str'] = searchKeyword;
+
+				let save_search_obj = search_obj;
+
+				if ($('#save-filter-weightages').prop('checked') == false) {
+					delete save_search_obj['filter_weights'];
+					console.log('saving without weights');
+				}
+
+				console.log('updated search information');
+				console.log(save_search_obj);
+
+				$.ajax({
+					url: 'search-history/save_search_result',
+					dataType : 'json',
+					data: save_search_obj,
+					success: function(data){
+						$(".save-search-success").fadeTo(2000, 500).slideUp(500, function(){
+							$('.save-search-success').slideUp(500);
+						});
+					},
+					error: function(resp){
+						console.log(resp);
+					}
+				});
+			}
+			
+		});
+
+		$("#deleteSubmitSearchName").on("click", function (e) {
+				
+			$('#delete-search-results').modal('hide');
+			var search_id_del =  document.getElementById("search_input_id").value;
+			search_del_obj['seachId'] = search_id_del;
+
+			$.ajax({
+				url: 'search-history/delete_search_result',
+				dataType : 'json',
+				data: search_del_obj,
+				success: function(data){
+					$(".delete-search-success").fadeTo(2000, 500).slideUp(500, function(){
+						$('.delete-search-success').slideUp(500);
+					});
+					setTimeout(function(){// wait for 5 secs(2)
+						   location.reload(); // then reload the page.(3)
+					}, 2000);
+
+				},
+				error: function(resp){
+					console.log(resp);
+				}
+			});
+				
+		});
+
+		$("#importContactDeleted").on("click", function (e) {
+			contact_id = {};
+			$('#delete-import-contact').modal('hide');
+			var contact_id =  document.getElementById("del-contact-id").value;
+			contact_id['contact_id'] = contact_id;
+			$.ajax({
+				url: '/userboard/delete/' + contact_id,
+				dataType : 'json',
+				data: contact_id,
+				success: function(data){
+					$(".delete-contact-success").fadeTo(2000, 500).slideUp(500, function(){
+						$('.delete-contact-success').slideUp(500);
+					});
+					setTimeout(function(){// wait for 5 secs(2)
+						   location.reload(); // then reload the page.(3)
+					  }, 2000);
+				},
+				error: function(resp){
+					console.log(resp);
+				}
+			});
+		});
+	</script>
+</body>
+</html>

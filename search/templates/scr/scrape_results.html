@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{Company.name}} employees from 10-K</title>
+</head>
+<style>
+    .person-info {
+        margin-bottom:10px;
+    }
+    .name {
+        font-family:verdana
+    }
+
+    .title {
+        font-family:verdana
+        font-size:15px;
+        font-style:italic;
+        font-weight:bold;
+    }
+
+
+</style>
+<body>
+<h1>{{Company.name}} Key Employees</h1>
+{% if person_list %}
+{% for person in person_list %}
+    <div class="person-info">
+        <span class="name">{{person.Name}}</span>
+        <div><span class="title"> ({{person.Title}}) </span></div>
+    </div>
+{% endfor %}
+{% endif %}
+</body>
+</html>

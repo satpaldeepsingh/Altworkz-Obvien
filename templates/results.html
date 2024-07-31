@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrape Results</title>
+</head>
+<body>
+    <div class="main">
+        <div class="section">
+            <div class="container">
+                
+                <!------------Results Begin------------->
+                <div>
+                    <div class="col-md-3">
+                        <article class="aw_card">
+                            <div class="aw_card_thumb">
+
+                    <!-----------------TYPE-------------------->
+                                    <b>Type :</b>
+                                    {{ result1 }}<br>
+                               
+                    <!-----------------INDUSTRY OR TITLE-------------------->
+                                  
+                                    <b>Industry :</b>
+                                    {{ result2 }}<br>
+                             
+                    <!-----------------INFORMATION-------------------->
+
+
+                            {% for keys ,  values  in results3.items %}
+                                <b>{{ keys }} :</b>
+                                {{ values }}<br>
+                            {% endfor %}
+
+                    <!-----------------INFORMATION META-------------------->
+                                {% for keys,values  in result4.items %}
+                                <br> <h2><b>{{ keys }} :</b></h2>
+                                    {{ values }}<br>
+                                    {% endfor %}
+
+                                    </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <!------------Results End------------->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+{% extends 'templates/base.html' %}
+{% load static %}
+
+<!-- ======= Search Section ======= -->
+{% block 'searchbar' %}
+<style>
+
+</style>
+<section class="search-container">
+  <div class="container">
+
+    <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="300">
+      <div class="col-xl-10 col-lg-12">
+        <div class="form-group">
+          <form method="GET" action="{% url 'elastic-search' %}">
+            {% csrf_token %}
+            <input type="text" class="form-control" name="query" id="search-text" placeholder="Search" />
+            <button class="search-submit"><i class="icofont-ui-search"></i></button>
+            <input type="button" class="search-filter" id="search_filters" value="+Filters" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-form filter-hide">
+      <form id="adv_filtr_frm">
+        <div class="row">
+          <div class="col-lg-2">
+            <label for="country" class="form-check-label">Location</label>
+          </div>
+          <div class="form-group col-lg-5">
+            <select id="countrys_list" class="form-control" name="country"></select>
+          </div>
+          <div class="form-group col-lg-5">
+            <select name="state" id="state_list" class="form-control"></select>
+          </div>
+          <div class="form-group col-lg-2 mb-0">
+          </div>
+          <div class="form-group col-lg-5 clearfix">
+            <input type="text" name="city_name" placeholder="Type City" class="form-control">
+          </div>
+          <div class="form-group col-lg-5 mb-0">
+          </div>
+
+          <div class="col-lg-2">
+            <label for="country" class="form-check-label">Years Since Live in Area</label>
+          </div>
+          <div class="form-group col-lg-5">
+            <input type="number" name="area_duration" placeholder="Number of Years" class="form-control">
+          </div>
+          <div class="form-group col-lg-5 mb-0">
+          </div>
+
+          <div class="col-lg-2">
+            <label for="country" class="form-check-label">Type of company</label>
+          </div>
+          <div class="form-group col-lg-5">
+            <input type="text" name="company_type" placeholder="Type of company" class="form-control">
+          </div>
+          <div class="form-group col-lg-5 mb-0">
+          </div>
+
+          <div class="col-lg-2">
+            <label for="country" class="form-check-label">Number of employees</label>
+          </div>
+          <div class="form-group col-lg-5">
+            <input type="number" name="employees_qty" placeholder="100-200" class="form-control">
+          </div>
+          <div class="form-group col-lg-5 mb-0">
+          </div>
+
+          <div class="col-lg-2">
+            <label for="country" class="form-check-label">Company industry</label>
+          </div>
+          <div class="form-group col-lg-5">
+            <select id="company_indus" class="form-control" name="company_industry">
+              <option value="IT">Information Technology</option>
+            </select>
+          </div>
+          <div class="form-group col-lg-5 mb-0">
+          </div>
+
+          <div class="col-lg-2">
+            <label for="country" class="form-check-label">Company sub-industry</label>
+          </div>
+          <div class="form-group col-lg-5">
+            <select id="cyber_sec" class="form-control" name="cyber_security">
+              <option value="CS">Cybersecurity</option>
+            </select>
+          </div>
+          <div class="form-group col-lg-5 text-right">
+            <input type="button" class="btn btn-warning" id="reset_filter_frm" value="Reset">
+            <button class="btn btn-success">Apply</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</section><!-- End Search Section -->
+
+{% endblock %}
+
+<!-- ======= Team Section ======= -->
+{% block 'searchresults' %}
+{% if results is not None %}
+
+<section id="team" class="team">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 search-result-left">
+        <!-- Start : Elastic Search Results -->
+        {% if search_type == "elastic" %}
+        <div class="section-title">
+          <h2 data-aos="fade-up">Elastic Search Results</h2>
+        </div>
+        <div class="row">
+          {% for result in results %}
+
+          <div class="col-lg-12 card" result-no="{{ forloop.counter }}" data-aos="fade-up">
+            <div class="row no-gutters results" id="sresult-{{ forloop.counter }}">
+              <div class="col-md-2">
+                <img id="sresult-image-{{ forloop.counter }}" src="/static/{{result|get:'_source'|get:'picture_url'}}" class="card-img"
+                  alt="...">
+              </div>
+              <div class="col-md-10">
+                <div class="card-body">
+                  <h6 class="card-title"><span id="sresult-name-{{ forloop.counter }}"><strong>{{result|get:"_source"|get:"first_name"}} {{result|get:"_source"|get:"last_name"}}</strong></span>
+                    <span id="sresult-headline-{{ forloop.counter }}"><i>({{result|get:"_source"|get:"headline"}})</i></span></h6>
+                  <p class="card-text" ><b>Industry: </b><span id="sresult-industry-{{ forloop.counter }}">{{result|get:"_source"|get:"industry"}}</span> </p>
+                  <p class="card-text" ><b>Location: </b><span id="sresult-location-{{ forloop.counter }}">{{result|get:"_source"|get:"location"}}</span> </p>
+                  <p class="card-text sresult-skills"><b>Skills: </b><span id="sresult-skills-{{ forloop.counter }}">{{result|get:"_source"|get:"skills"}}</span> </p>
+                  <!-- <p class="card-text" id="sresult-lastupdate-{{ forloop.counter }}"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+        {% endif %}
+        <!-- End : Elastic Search Results -->
+
+        <!-- Begin : Web Search Results -->
+        {% if search_type == "web" %}
+        <div class="section-title">
+          <h2 data-aos="fade-up">Web Search Results</h2>
+        </div>
+        <div class="row">
+          {% for result in results %}
+
+          <div class="col-lg-12 card" result-no="{{ forloop.counter }}" data-aos="fade-up">
+            <div class="row no-gutters results" id="sresult-{{ forloop.counter }}">
+              <div class="col-md-2">
+                <img id="sresult-image-{{ forloop.counter }}" src="{{result.Avatar}}" class="card-img"
+                  alt="...">
+              </div>
+              <div class="col-md-10">
+                <div class="card-body">
+                  <!-- <h6 class="card-title"><span id="sresult-name-{{ forloop.counter }}"><strong>{{result.first_name}} {{result.last_name}}</strong></span> -->
+                    <h6 class="card-title"><span id="sresult-name-{{ forloop.counter }}"><strong>{{result|get:"full_name"}}</strong></span>
+                    <span id="sresult-headline-{{ forloop.counter }}"><i>({{result.headline}})</i></span></h6>
+                  <p class="card-text" ><b>Industry: </b><span id="sresult-industry-{{ forloop.counter }}">{{result.Industry}}</span> </p>
+                  <p class="card-text" ><b>Location: </b><span id="sresult-location-{{ forloop.counter }}">{{result.Location}}</span> </p>
+                  <p class="card-text sresult-skills"><b>Skills: </b><span id="sresult-skills-{{ forloop.counter }}">{{result.skills}}</span> </p>
+                  <!-- <p class="card-text" id="sresult-lastupdate-{{ forloop.counter }}"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+
+                  <div class="occurance-fields">
+                    {% for field in result.occurance_fields %}
+                      {% for key, value in field.items %}
+                      <div>
+                          <span>{{key}}</span> <span>{{value}}</span>
+                      </div>
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                  <div class="weightage">
+                    {% if result.weightage %}
+                        <div>
+                          <span>Occurance Weightage </span> <span>{{result.weightage.occurance_weightage}}</span>
+                        </div>
+                        <div>
+                          <span>Field Weightage </span> <span>{{result.weightage.field_weightage}}</span>
+                        </div>
+                        <span>Rel Weightage </span> <span>{{result.weightage.rel_weightage}}</span>
+                        <div>
+                          <span><b>Total Weightage </b></span> <span></span><b>{{result.weightage.total}}</b></span>
+                        </div>
+                    {% endif %}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+        {% endif %}
+        <!-- End : Web Search Results -->
+
+      </div>
+
+      <div class="col-lg-4 result-right" id="person-detail">
+        <div class="member" data-aos="fade-up">
+          <div class="member-img">
+            <img id="person-detail-img" src="{% static 'search/img/team/team-4.jpg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="member-info">
+            <h4 id="person-detail-name">Amanda Jepson</h4>
+            <span id="person-detail-headline">Accountant</span>
+            <span id="person-detail-industry">2014 - 2017</span>
+            <p id="person-detail-skills">Ms. Amanda has been working as an accountant in company since last 2
+              years.</p>
+            <div class="owl-carousel result-carousel" data-aos="fade-up">
+
+              {% for suggestion in results.suggestions %}
+
+              <div class="suggestion-card item">
+                <a href="#"><img src="{% static suggestion.image %}" /></a>
+              </div>
+
+              {% endfor %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section><!-- End Team Section -->
+
+{% endif %}
+{% endblock %}
+
+{% block 'JSblock' %}
+
+<script>
+  $(document).ready(function () {
+    $('.results').first().addClass('selected');
+    $('.results').click(function () {
+      $('.results').removeClass('selected');
+      $(this).addClass('selected');
+    });
+
+    if ($('#sresult-1').length) {
+      update_result_detail(1);
+      $('#person-detail').show();
+    }
+    else {
+      $('.section-title').append('<span>No results found</span>');
+    }
+
+    $('.card').click(function () {
+
+      var ci              = $(this);
+      var num             = ci.attr('result-no');
+      console.log('result no ' + num);
+
+      update_result_detail(num);
+
+    });
+
+    function update_result_detail (num) {
+
+      var detail   = {
+        name:     $('#sresult-name-'     + num).text(),
+        image:    $('#sresult-image-'    + num).attr('src'),
+        headline: $('#sresult-headline-' + num).text().replace(/[()]/g, ""),
+        industry: $('#sresult-industry-' + num).text(),
+        location: $('#sresult-location-' + num).text(),
+        skills:   $('#sresult-skills-'   + num).text()
+      };
+
+      $('#person-detail-img').attr('src', detail.image);
+      $('#person-detail-name').text(detail.name);
+      $('#person-detail-headline').text(detail.headline);
+      $('#person-detail-industry').text(detail.industry);
+      $('#person-detail-skills').text(detail.skills);
+
+    }
+
+  });
+</script>
+
+{% endblock %}

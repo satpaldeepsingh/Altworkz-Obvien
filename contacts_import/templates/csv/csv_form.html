@@ -1,0 +1,630 @@
+{% extends 'templates/base.html' %} {% load static %} {% block 'css' %}
+<link href="{% static 'css/tags-input.css' %}" rel="stylesheet" />
+
+{% endblock %}
+<!-- ======= csv Section ======= -->
+{% block 'mainblock' %}
+
+		{% if messages %}
+		<div class="alert alert-success" role="" >
+			{% for message in messages %}
+					{{ message }}
+			{% endfor %}
+		</div>
+	{% endif %}
+	<section class="aw_section aw_section_csv">
+
+		<div class="aw_section_header">
+			<h2 class="aw_section_title">Import Contacts</h2>
+			<div class="aw_section_actions">
+				{% comment %} <a href="{% url 'import_csv_sheet' %}" class="btn btn-primary">Add CSV Contacts</a> {% endcomment %}
+			</div> 
+		</div>
+		<div class="aw_section_body">
+			<div class="aw_import_nav">
+				<ul class="aw_import_list">
+					<li class="active"><a href="#">CSV</a></li>
+					<li><a href="/contacts/people-api">Google</a></li>
+					<li><a href="/contacts/facebook-contacts-import">Facebook</a></li>
+					<li><a href="/contacts/twitter-contacts-import">Twitter</a></li>
+					<li><a href="/contacts/linkedin-contacts-import">LinkedIn</a></li>
+				</ul>
+			</div>
+			<div class="aw_download_template">
+				<a href="{% url 'download-csv-template' %}" class="btn btn-success btn_download_template">Download Template</a>
+			</div>
+			{% if messages %}
+				<div class="alert alert-danger" role="" >
+					{% for message in messages %}
+							{{ message }}
+					{% endfor %}
+				</div>
+			{% endif %}
+
+
+			<form class="aw_import_contacts_form" id="csv_upload_form" method="POST" action="{% url 'import_csv' %}" enctype="multipart/form-data">
+
+				{% csrf_token %}
+
+				<div class="form-group">
+					<label for="csv"> Upload a file</label>
+					<input type="file" class="form-control" name="csv" id="csv" accept=".csv" required />
+				</div>
+
+				<div class="form-group">
+					<label for="csv_type">Select CSV type</label>
+					<select name="csv_type" id="csv_type" class="form-control" required>
+						<option value="" disabled selected>Select CSV type</option>
+						<option value="social_csv">LinkedIn connections CSV</option>
+						<option value="custom_csv">Custom CSV</option>
+					</select>
+					<div id="cust-csv-mandatory-fields-note">
+						Note: first_name, last_name, organization_name or organization_job_title fields are mandatory in Custom CSV
+					</div>
+				</div>
+
+				<div class="form-group csv_contact_type">
+					<label for="contact_type">Select contact type</label>
+					<select name="contact_type" id="contact_type" class="form-control" required>
+						<option value="" disabled selected>Select contact type</option>
+						<option value="1st_degrees">1st degree relationships</option>
+						<option value="poi">Persons of interest (PoIs)</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label for="tags">General Tags</label>
+					<input type="text" class="form-control" value="" data-role="tagsinput" placeholder="General Tags" name="tags" />
+				</div>
+				
+				<div class="form-group">
+					<label for="tags">File Tags</label>
+					<!-- <input type="text" class="form-control" value="" data-role="tagsinput" placeholder="File Tags" name="csv_tags" required /> -->
+					<input type="text" class="form-control" value="" placeholder="File Tags" name="csv_tags" required />
+				</div>
+
+				<div class="aw_import_submit">
+					<button class="btn btn-primary" type="submit" id="submit_csv_form">Submit</button>
+				</div>
+
+			</form>
+
+		</div>
+
+	</section>
+
+	{% if csv_stats %}
+	<div id="dialog" title="CSV Upload Results">
+		<div class="alert alert-success" role="alert">
+			<h4 class="alert-heading">CSV imported!</h4>
+			<ul style="margin-bottom: 0;">
+				<li>Total records <b>{{csv_stats.total_rows}}</b> </li>
+				<li>Records imported <b>{{csv_stats.total_processed_rows}}</b> </li>
+				<li>Records rejected <b>{{csv_stats.total_rejected_rows}}</b> </li>
+			</ul>
+		</div>
+
+		{% if csv_stats.rejected_rows %}
+		<div class="alert alert-danger">
+			 <h4 class="alert-heading">Records rejected!</h4>
+			{% comment %} <button href="#" class="btn btn-info" id="update-csv-upload-error-rows">
+			<span>
+				<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+				</svg>
+			</span>
+			<span>
+				Update Error Rows
+			</span>
+			</button> {% endcomment %}
+			{% for row in csv_stats.rejected_rows %}
+				<div class="rejected-list">
+					<div>
+						<b><i>Row #</i></b>: {{row.row_no}}
+					</div>
+					<ul>
+					{% for reason in row.reasons %}
+						{% if row.first_name %}
+						<li>
+							<b><i>Reason</i></b>: {{reason.msg}} <i>Person</i> : {{row.first_name}} <b><i>Column</i></b> : {{reason.field}}, {% if reason.value %} Value: <u>{{reason.value}}</u> {% endif %}
+						</li>
+						{% else %}
+						<li>
+							<b><i>Reason</i></b>: {{reason.msg}} <br><b><i>Column</i></b> : {{reason.field}}{% if reason.value %}, <b><i>Value</i></b>: <u>{{reason.value}}</u> {% endif %}
+						</li>
+						{% endif %}
+					{% endfor %}
+					</ul>
+				</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
+
+	<div id="csv-input-dialog" style="display:none">
+		<div id="show-cols">
+			<input type="checkbox" id="show-hide-addtional-cols" /> <label><b>Show Additional Columns</b></label>
+			<div id="additional-cols">
+				{% for csv_header in csv_additional_headers %}
+					<input type="checkbox" id="{{csv_header}}" class="toogle-additional-cols" /> <label>{{csv_header}}</label>
+				{% endfor %}
+			</div>
+		</div>
+		<div id="csv-upload-stats" class="csv-upload-stats">
+		</div>
+		<div id="csv-error-msgs" class="csv-error-msgs">
+		</div>
+		<div id="fields-description" class="fields-description">
+		</div>
+		<div id="csv-spreadsheet" class="csv-spreadsheet">
+		</div>
+	</div>
+
+	<div id="csv-correction-dialog" style="display:none">
+		<div id="csv-upload-stats-correct" class="csv-upload-stats">
+		</div>
+		<div id="csv-error-msgs-correct" class="csv-error-msgs">
+		</div>
+		<div id="fields-description-correct" class="fields-description">
+		</div>
+		<div id="csv-spreadsheet-correct" class="csv-spreadsheet">
+		</div>
+	</div>	
+
+
+{% endblock %} {% block 'js' %}
+<script type="text/javascript" src="{% static 'js/tags-input.js' %}"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+  	$(document).ready(function () {
+	
+		$('#submit_csv_form').click(function (e) {
+			e.preventDefault();
+			$('.aw_wrapper').preloader({
+				text: 'The system is uploading CSV. It might take some time depending on quantity of data. Please Wait...',
+				percent: '',
+				duration: '',
+				zIndex: '',
+				setRelative: false
+			});	
+			$('#csv_upload_form').submit();
+		});
+	
+		{% if first_time_login %}
+		
+			//$('#exampleModalCenter').modal('show');
+			$('#modalIntro h5.modal-title').text('Let\'s Import Some Contacts');
+			$('#modalIntro #modal-intro-body').html('<div>You can variety of means to import contacts CSV or by signing in through Google, Twitter</div>');
+			$('#modalIntro').modal('show');
+		
+		{% endif %}
+	
+    	$(".results").first().addClass("selected");
+    	$(".results").click(function () {
+      		$(".results").removeClass("selected");
+      		$(this).addClass("selected");
+    	});
+
+		$("#csv").on('change', function() {				
+			//$('input[name="csv_tags"]').tagsinput('removeAll');
+			//$('input[name="csv_tags"]').tagsinput('add', $(this).val().split('\\').pop().slice(0, -4));
+			$('input[name="csv_tags"]').val($(this).val().split('\\').pop().slice(0, -4)); 
+		});
+			
+  	});
+
+  	function htmlDecode(input) {
+  		var doc = new DOMParser().parseFromString(input, "text/html");
+  		return doc.documentElement.textContent;
+	}
+
+  	{% if csv_headers %}
+		 var csv_all_headers = [];
+		{% for csv_header in csv_headers %}
+			csv_all_headers.push('{{csv_header}}');
+		{% endfor %}
+	{% endif %}    
+
+	{% if csv_initial_headers %}
+		 var csv_headers = [];
+		{% for csv_header in csv_initial_headers %}
+			csv_headers.push('{{csv_header}}');
+		{% endfor %}
+	{% endif %}
+
+	{% if csv_headers_description %}
+			 var csv_headers_description = [];
+		{% for csv_header, description in csv_headers_description.items %}
+			csv_headers_description.push({'{{csv_header}}': '{{description}}'});
+		{% endfor %}
+	{% endif %}
+
+	var no_of_csv_rows = 1;
+	var error_rows_msgs = {};
+	var csv_upload_error_rows = [];
+
+	{% for row in csv_stats.rejected_rows %}
+  		csv_upload_error_rows.push('{{row}}');
+	{% endfor %}
+
+	$('#csv-spreadsheet').tabularInput({
+		'rows': no_of_csv_rows,
+		'columns': csv_headers.length,
+		'animate':false,
+		'columnHeads': csv_headers,
+		'newRowOnTab':true,
+		'name':'csv_fields',
+		'class': 'csv_fields',
+	});
+
+	function save_csv () {
+	
+   		$('.aw_wrapper').preloader({
+            text: 'Please Wait...',
+            percent: '',
+            duration: '',
+            zIndex: '',
+            setRelative: false
+        });	
+	
+
+		var csv_rows = [];
+
+		$('#csv-upload-stats').html('');
+		$('#csv-error-msgs').html('');
+		$('#csv-spreadsheet tr').each(function(tr) {
+
+			if ($(this).removeClass('error-row'));
+
+		});		
+
+		for (i = 1; i <= no_of_csv_rows; i++) {
+			console.log(no_of_csv_rows);
+			let csv_row = {};
+			let empty_row = true;
+			for (j = 0; j < csv_headers.length; j++) {
+				if ($('[name="csv_fields['+j+']['+i+']"]').val().trim() != '') {
+					empty_row = false;	
+				}
+				csv_row[csv_headers[j]] = $('[name="csv_fields['+j+']['+i+']"]').val();
+				console.log(j + " + " + i + $('[name="csv_fields['+j+']['+i+']"]').val());
+			}
+			if (!empty_row) {
+				csv_rows.push(csv_row);
+			}
+		}
+		console.log(csv_rows);
+
+		$.ajax({
+			url: 'import-csv-ajax',
+			method: 'POST',
+         	beforeSend: function(xhr){
+         		xhr.setRequestHeader('X-CSRFToken', jQuery("[name=csrfmiddlewaretoken]").val());
+				$('.aw_wrapper').preloader('remove');
+         	},
+			data: {'csv_rows': csv_rows},
+			success: function (response) {
+				csv_results = JSON.parse(response);
+				if (csv_results.rejected_count > 0) {
+					let rejected_rows = csv_results.rejected_rows;
+					rejected_rows.forEach(function (row) {
+						let row_index = row.row_no;
+						$('#csv-spreadsheet tr').eq(row_index).addClass('error-row');
+						error_rows_msgs[row_index] = [];
+						row.reasons.forEach(function (reason) {
+							let field = reason.field;
+							let value = reason.value;
+							let msg = reason.msg;
+							error_rows_msgs[row_index].push(reason);
+							let col_index = $('#csv-spreadsheet tr').eq(0).find(`th:contains(${field})`).index();
+							$('#csv-spreadsheet tr').eq(row_index).find(`td`).eq(col_index).find('input').css({'color':'#b73939'});
+						});
+					});
+					console.log(error_rows_msgs);
+
+				}
+				else {
+					setTimeout(function () {
+
+						$('#csv-input-dialog').dialog('close');
+
+					}, 2000);
+				}
+
+				$('#csv-upload-stats').html(`<div class="alert alert-info">Total ${csv_results.total_rows} records, ${csv_results.success_count} records processed, ${csv_results.rejected_count} rejected</span>`);
+			},
+		});
+	}
+
+	function save_csv_correction () {
+
+		var csv_rows = [];
+
+		$('#csv-upload-stats-correct').html('');
+		$('#csv-error-msgs-correct').html('');
+		$('#csv-spreadsheet-correct tr').each(function(tr) {
+
+			if ($(this).removeClass('error-row'));
+
+		});
+
+		for (i = 1; i <= csv_upload_error_rows.length; i++) {
+			let csv_row = {};
+			for (j = 0; j < csv_all_headers.length; j++) {
+				csv_row[csv_all_headers[j]] = $('[name="csv_fields['+j+']['+i+']"]').val();
+			}
+			csv_rows.push(csv_row);
+		}
+
+		$.ajax({
+			url: 'import-csv-ajax',
+			method: 'POST',
+			beforeSend: function(xhr){
+				xhr.setRequestHeader('X-CSRFToken', jQuery("[name=csrfmiddlewaretoken]").val());
+			},
+			data: {'csv_rows': csv_rows},
+			success: function (response) {
+				csv_results = JSON.parse(response);
+				if (csv_results.rejected_count > 0) {
+					let rejected_rows = csv_results.rejected_rows;
+					rejected_rows.forEach(function (row) {
+						let row_index = row.row_no;
+						$('#csv-spreadsheet-correct tr').eq(row_index).addClass('error-row');
+						error_rows_msgs[row_index] = [];
+						row.reasons.forEach(function (reason) {
+							let field = reason.field;
+							let value = reason.value;
+							let msg = reason.msg;
+							error_rows_msgs[row_index].push(reason);
+							let col_index = $('#csv-spreadsheet-correct tr').eq(0).find(`th:contains(${field})`).index();
+							$('#csv-spreadsheet-correct tr').eq(row_index).find(`td`).eq(col_index).find('input').css({'color':'#b73939'});
+						});
+					});
+					console.log(error_rows_msgs);
+
+				}
+				else {
+
+					setTimeout(function () {
+
+						$('#csv-correction-dialog').dialog('close');
+
+					}, 2000);					
+				
+				}
+
+				$('#csv-upload-stats-correct').html(`<div class="alert alert-info">Total ${csv_results.total_rows} records, ${csv_results.success_count} records processed, ${csv_results.rejected_count} rejected</span>`);
+			},
+		});
+	}
+
+    $('#update-csv-upload-error-rows').click(function() {
+
+		$('#csv-spreadsheet').tabularInput('destroy');
+
+		error_rows_msgs = {};
+
+		$('#dialog').dialog('close');
+
+		//console.log(csv_all_headers);
+
+		$('#csv-spreadsheet-correct').tabularInput({
+			'rows': csv_upload_error_rows.length,
+			'columns': csv_all_headers.length,
+			'animate':false,
+			'columnHeads': csv_all_headers,
+			'newRowOnTab':true,
+			'name':'csv_fields',
+			'class': 'csv_fields',
+		});
+		  
+		for (k = 0; k < csv_upload_error_rows.length; k++) {
+
+			let error_csv_row = JSON.parse(JSON.stringify(htmlDecode(csv_upload_error_rows[k])));
+			error_csv_row = JSON.parse(error_csv_row.replace(/'/g, '"'));
+
+			console.log(error_csv_row);
+			let rejection_reasons = error_csv_row.reasons;
+			console.log(rejection_reasons);
+
+			let row_index = k + 1;
+
+			for (csv_hi = 0; csv_hi < csv_all_headers.length; csv_hi++) {
+
+				$('#csv-spreadsheet-correct tr').eq(row_index).addClass('error-row');
+
+				$('[name="csv_fields['+csv_hi+']['+(row_index)+']"]').val(error_csv_row.row[csv_all_headers[csv_hi]]);
+
+				rejection_reasons.forEach(function (reason) {
+					error_rows_msgs[row_index] = [];
+					//console.log(reason);
+					let field = reason.field;
+					let value = reason.value;
+					let msg = reason.msg;
+					error_rows_msgs[row_index].push(reason);
+					//console.log(error_rows_msgs);
+					let col_index = $('#csv-spreadsheet-correct tr').eq(0).find(`th:contains(${field})`).index();
+					$('#csv-spreadsheet-correct tr').eq(row_index).find(`td`).eq(col_index).find('input').css({'color':'#b73939'});
+
+				});
+
+			}
+
+		}
+
+		$("#csv-correction-dialog").dialog({
+			title: "CSV Sheet",
+			width:"50%",
+			resizable: false,
+			modal: true,
+			height: "auto",
+			buttons: [
+			{
+				text: "Save",
+				click: function() {
+					save_csv_correction();
+				}
+			}]
+		});
+
+	}); 
+
+   $('#csv-btn').click(function () {
+
+		$('#csv-spreadsheet').tabularInput({
+			'rows': no_of_csv_rows,
+			'columns': csv_headers.length,
+			'animate':false,
+			'columnHeads': csv_headers,
+			'newRowOnTab':true,
+			'name':'csv_fields',
+			'class': 'csv_fields',
+		});
+
+
+		$("#csv-input-dialog").dialog({
+			title: "CSV Sheet",
+			width:"50%",
+			resizable: false,
+			modal: true,
+			height: "auto",
+			buttons: [
+			{
+				text: "Add Row",
+				click: function () {
+					$("#csv-spreadsheet").tabularInput("addRow");
+					no_of_csv_rows++;
+				}
+			},
+			{
+				text: "Save",
+				click: function() {
+					save_csv();
+					//$(this).dialog("close");
+				}
+			}]
+	   });
+
+   });
+
+   $('#show-hide-addtional-cols').change(function () {
+		$("#additional-cols").toggle();
+   });
+
+   $('.toogle-additional-cols').change(function () {
+
+   		var selected_header = $(this).attr('id');
+
+		if ($(this).prop('checked')) {
+			if (!csv_headers.includes(selected_header)) {
+				csv_headers.push(selected_header);
+				$("#csv-spreadsheet").tabularInput('addColumnHeads', csv_headers);
+			}
+		}
+		else {
+			if ((hindex = csv_headers.indexOf(selected_header)) > -1) {
+				csv_headers.splice(hindex, 1);
+				$("#csv-spreadsheet").tabularInput('removeColumnHeads', csv_headers);
+			}
+		}
+
+   });
+
+   $(document).on('focusin', 'input.csv_fields', function () {
+
+   		var $th = $(this).parent().closest('table').find('th').eq($(this).parent().index());
+   		var selected_field_heading = $th.text();
+
+   		var column = csv_headers_description.find(field => field[$th.text()]);
+   		var field_description_html = `<span class="text-danger"><b>${column[selected_field_heading]}</b></span>`;
+
+		$('#fields-description').html(field_description_html);
+		$('#fields-description').show();
+		   
+		$('#fields-description-correct').html(field_description_html);
+   		$('#fields-description-correct').show();
+
+		var parent_tr = $(this).closest('tr');
+
+   		if ($(parent_tr).hasClass('error-row')) {
+
+			let error_row_index = $(parent_tr).index() + 1;
+			let msg_html = '';
+
+			if (error_rows_msgs[error_row_index]) {
+				let error_msgs = error_rows_msgs[error_row_index];
+
+				error_msgs.forEach(function (error) {
+					msg_html += `<div class="alert alert-danger">Reason: ${error.msg} (Field: <b>${error.field}</b>, Value: <b>${error.value}</b>) </div>`;
+				});
+
+				console.log(msg_html);
+
+			}
+
+			$('#csv-error-msgs').html(msg_html);
+			$('#csv-error-msgs-correct').html(msg_html);
+
+
+   		}
+   		else {
+
+   			$('#csv-error-msgs').html('');
+
+   		}
+
+
+   });
+
+
+//    $(document).on('focusout', 'input.csv_fields', function (e) {
+
+//    		$('#fields-description').hide();
+
+//    });
+
+	$("#dialog").dialog({
+		width:1000,
+		resizable: false,
+		modal: true,
+		height: "auto",
+		buttons: [{
+			text: "OK",
+			click: function() {
+				$(this).dialog("close");
+			}
+		}]
+	});
+
+   		// $('.statsModal').modal('show');
+
+	$('.aw_import_contacts_form').on('keyup keypress', function(e) {
+		var keyCode = e.keyCode || e.which;
+		if (keyCode === 13) {
+			e.preventDefault();
+			return false;
+		}
+
+	});
+	
+	$('select#csv_type').on('change', function() {
+		if (this.value == "social_csv"){
+			$('.csv_contact_type').show();
+			$('#cust-csv-mandatory-fields-note').hide();
+		}
+		else {
+			$('.csv_contact_type').show();
+			$('#cust-csv-mandatory-fields-note').show();
+		}			
+	});
+	
+	$('.work-in-progress').click(function () {
+		event.preventDefault();
+		swal("In-Progress", "We are currently working on it. This feature will be available soon.", "info");
+	});
+	
+</script>
+
+{% endblock %}
